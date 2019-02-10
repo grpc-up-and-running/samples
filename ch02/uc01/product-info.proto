@@ -1,0 +1,15 @@
+syntax = "proto3";
+package advanced.grpc.ch02.gs;
+import "google/protobuf/wrappers.proto";
+
+service ProdInfoService {
+    rpc getProductByID(google.protobuf.StringValue) returns (ProductInfo); 
+    rpc addProduct(ProductInfo) returns (google.protobuf.BoolValue); 
+}
+
+message ProductInfo {
+	string id = 1;
+    string name = 2;
+    string description = 3;
+    float price = 4; 
+} 
