@@ -1,4 +1,7 @@
-//go:generate protoc --go_out=plugins=grpc:golang/gen product_mgt.proto
+// Go to ${Advanced-gRPC}/samples/ch01/uc01
+// Optional: Execute protoc --go_out=plugins=grpc:golang/product_mgt product_mgt.proto
+// Execute go get -v github.com/advanced-grpc/samples/ch01/uc01/golang/product_mgt
+// Excute go run golang/product_mgt_client/main.go
 
 package main
 
@@ -8,7 +11,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
-	pb "github.com/daneshk/samples/ch01/uc01/golang/product_mgt"
+	pb "github.com/advanced-grpc/samples/ch01/uc01/golang/product_mgt"
 )
 
 const (
