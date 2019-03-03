@@ -1,0 +1,15 @@
+syntax = "proto3";
+package ecommerce;
+
+service ProductMgt {
+    rpc addProduct(ProductRequest) returns (ProductResponse);
+}
+
+message ProductRequest {
+    string name = 2;
+    string description = 3;
+}
+
+message ProductResponse {
+    string productID = 1;
+}
