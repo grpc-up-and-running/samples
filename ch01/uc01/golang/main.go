@@ -16,7 +16,7 @@
  *
  */
 
-//go:generate protoc -I ../helloworld --go_out=plugins=grpc:../helloworld ../helloworld/helloworld.proto
+//go:generate protoc product_mgt.proto --go_out=golang/gen
 
 package main
 
@@ -26,7 +26,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	pb "google.golang.org/grpc/examples/helloworld/helloworld"
+	pb "github.com/daneshk/samples/tree/master/ch01/uc01/golang/gen"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -38,8 +38,8 @@ const (
 type server struct{}
 
 // SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+func (s *server) AddProduct(ctx context.Context, in *pb.ProductRequest) (*pb.ProductResponse, error) {
+	return &pb.ProductResponse{ProductID: "1234567"}, nil
 }
 
 func main() {
