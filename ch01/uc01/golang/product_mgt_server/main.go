@@ -11,7 +11,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	pb "github.com/advanced-grpc/samples/ch01/uc01/golang/product_mgt"
+	pb "github.com/advanced-grpc/samples/ch01/uc01/golang/product_info"
 	"google.golang.org/grpc/reflection"
 )
 
