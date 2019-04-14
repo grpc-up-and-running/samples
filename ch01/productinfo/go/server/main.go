@@ -12,7 +12,8 @@ import (
 	"net"
 	"os/exec"
 
-	pb "github.com/advanced-grpc/samples/ch01/uc01/golang/product_info"
+	pb "github.com/advanced-grpc/samples/ch01/productinfo/go/product_info"
+	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -27,18 +28,18 @@ type server struct{}
 var productMap = make(map[string]*pb.Product)
 
 // AddProduct implements ecommerce.AddProduct
-func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*pb.ProductID, error) {
+func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.StringValue, error) {
 	out, err := exec.Command("uuidgen").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
 	in.Id = string(out)
 	productMap[in.Id] = in
-	return &pb.ProductID{Value: in.Id}, nil
+	return &wrapper.StringValue{Value: in.Id}, nil
 }
 
 // GetProduct implements ecommerce.GetProduct
-func (s *server) GetProduct(ctx context.Context, in *pb.ProductID) (*pb.Product, error) {
+func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.Product, error) {
 	value, exists := productMap[in.Value]
 	if exists {
 		return value, nil
