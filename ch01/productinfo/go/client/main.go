@@ -10,7 +10,8 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/advanced-grpc/samples/ch01/uc01/golang/product_info"
+	pb "github.com/advanced-grpc/samples/ch01/productinfo/go/product_info"
+	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	"google.golang.org/grpc"
 )
 
@@ -29,7 +30,7 @@ func main() {
 
 	// Contact the server and print out its response.
 	name := "Sumsung S10"
-	description := "Samsung Galaxy S10 is the latest smartphone, launched in February 2019"
+	description := "Samsung Galaxy S10 is the latest smart phone, launched in February 2019"
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description})
@@ -38,7 +39,7 @@ func main() {
 	}
 	log.Printf("Product ID: %s added successfully", r.Value)
 
-	product, err := c.GetProduct(ctx, &pb.ProductID{Value: r.Value})
+	product, err := c.GetProduct(ctx, &wrapper.StringValue{Value: r.Value})
 	if err != nil {
 		log.Fatalf("Could not get product: %v", err)
 	}

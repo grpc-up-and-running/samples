@@ -1,5 +1,6 @@
 package server;
 
+import com.google.protobuf.StringValue;
 import ecommerce.ProductInfoGrpc;
 import ecommerce.ProductInfoOuterClass;
 import io.grpc.Status;
@@ -14,24 +15,23 @@ public class ProductInfoImpl extends ProductInfoGrpc.ProductInfoImplBase {
     private Map<String, ProductInfoOuterClass.Product> productMap = new HashMap();
 
     @Override
-    public void addProduct(ProductInfoOuterClass.Product request, io.grpc.stub.StreamObserver<ProductInfoOuterClass.ProductID> responseObserver) {
+    public void addProduct(ProductInfoOuterClass.Product request, io.grpc.stub.StreamObserver<StringValue> responseObserver) {
         UUID uuid = UUID.randomUUID();
         String randomUUIDString = uuid.toString();
         productMap.put(randomUUIDString, request);
-        ProductInfoOuterClass.ProductID id =
-                ProductInfoOuterClass.ProductID.newBuilder().setValue(randomUUIDString).build();
+        StringValue id = StringValue.newBuilder().setValue(randomUUIDString).build();
         responseObserver.onNext(id);
         responseObserver.onCompleted();
     }
 
     @Override
-    public void getProduct(ProductInfoOuterClass.ProductID request, io.grpc.stub.StreamObserver<ProductInfoOuterClass.Product> responseObserver) {
+    public void getProduct(StringValue request, io.grpc.stub.StreamObserver<ProductInfoOuterClass.Product> responseObserver) {
         String id = request.getValue();
         if (productMap.containsKey(id)) {
             responseObserver.onNext(productMap.get(id));
+            responseObserver.onCompleted();
         } else {
             responseObserver.onError(new StatusException(Status.NOT_FOUND));
         }
-        super.getProduct(request, responseObserver);
     }
 }

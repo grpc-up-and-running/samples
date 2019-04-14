@@ -36,3 +36,8 @@ gradle-app.setting
 .project
 .settings
 .vscode
+
+# bazel
+bazel-*
+.bazelproject
+.ijwb/*
