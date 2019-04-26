@@ -23,9 +23,9 @@ const (
 )
 
 // server is used to implement ecommerce/product_info.
-type server struct{}
-
-var productMap = make(map[string]*pb.Product)
+type server struct{
+	productMap map[string]*pb.Product
+}
 
 // AddProduct implements ecommerce.AddProduct
 func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.StringValue, error) {
@@ -34,13 +34,13 @@ func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.Strin
 		log.Fatal(err)
 	}
 	in.Id = string(out)
-	productMap[in.Id] = in
+	s.productMap[in.Id] = in
 	return &wrapper.StringValue{Value: in.Id}, nil
 }
 
 // GetProduct implements ecommerce.GetProduct
 func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.Product, error) {
-	value, exists := productMap[in.Value]
+	value, exists := s.productMap[in.Value]
 	if exists {
 		return value, nil
 	}
