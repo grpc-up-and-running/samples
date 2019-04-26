@@ -34,6 +34,10 @@ func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.Strin
 		log.Fatal(err)
 	}
 	in.Id = string(out)
+	if (s.productMap == nil) {
+		log.Printf("map is empty")
+		s.productMap = make(map[string]*pb.Product)
+	}
 	s.productMap[in.Id] = in
 	return &wrapper.StringValue{Value: in.Id}, nil
 }
