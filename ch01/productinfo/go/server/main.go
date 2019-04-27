@@ -10,12 +10,12 @@ import (
 	"errors"
 	"log"
 	"net"
-	"os/exec"
 
 	pb "github.com/advanced-grpc/samples/ch01/productinfo/go/product_info"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"github.com/google/uuid"
 )
 
 const (
@@ -29,13 +29,12 @@ type server struct{
 
 // AddProduct implements ecommerce.AddProduct
 func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.StringValue, error) {
-	out, err := exec.Command("uuidgen").Output()
+	out, err := uuid.NewUUID()
 	if err != nil {
 		log.Fatal(err)
 	}
-	in.Id = string(out)
+	in.Id = out.String()
 	if (s.productMap == nil) {
-		log.Printf("map is empty")
 		s.productMap = make(map[string]*pb.Product)
 	}
 	s.productMap[in.Id] = in
