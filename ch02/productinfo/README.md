@@ -1,5 +1,12 @@
 # Product Info Service and Client 
 
+- Online retail scenario has a `` ProductInfo`` micro service which is responsible for managing the products and their
+ information. The consumer of that service can add, remove, retrieve products via that service. 
+
+- ``ProductInfo`` service is implemented on `` Go``. 
+- One of the consumer of that service is written using ``Java``. 
+- This use case shows you can implement both ``ProductInfo`` service and its consumer. 
+
 ## Prerequisite
 
 Install Bazel version 0.19.2

@@ -1,1 +1,1 @@
-# samples 2 
+# Use case samples of Chapter 1 
