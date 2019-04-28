@@ -5,10 +5,10 @@ FROM golang
 ENV GOPATH /go
 
 # Copy the local package files to the container's workspace.
-ADD server /go/src/github.com/advanced-grpc/samples/ch01/productinfo/go/server
-ADD product_info /go/src/github.com/advanced-grpc/samples/ch01/productinfo/go/product_info
+ADD server /go/src/github.com/grpc-up-and-running/samples/ch02/productinfo/go/server
+ADD product_info /go/src/github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info
 
-WORKDIR /go/src/github.com/advanced-grpc/samples/ch01/productinfo/go/server
+WORKDIR /go/src/github.com/grpc-up-and-running/samples/ch02/productinfo/go/server
 
 # Download all the dependencies
 RUN go get -d ./...

@@ -1,7 +1,7 @@
-// Go to ${Advanced-gRPC}/samples/ch01/uc01
+// Go to ${grpc-up-and-running}/samples/ch02/productinfo
 // Optional: Execute protoc --go_out=plugins=grpc:golang/product_info product_info.proto
-// Execute go get -v github.com/advanced-grpc/samples/ch01/uc01/golang/product_info
-// Execute go run golang/product_info_server/main.go
+// Execute go get -v github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info
+// Execute go run go/server/main.go
 
 package main
 
@@ -11,11 +11,11 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info"
-	wrapper "github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"github.com/google/uuid"
+	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info"
+	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 )
 
 const (
@@ -34,7 +34,7 @@ func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.Strin
 		log.Fatal(err)
 	}
 	in.Id = out.String()
-	if (s.productMap == nil) {
+	if s.productMap == nil {
 		s.productMap = make(map[string]*pb.Product)
 	}
 	s.productMap[in.Id] = in

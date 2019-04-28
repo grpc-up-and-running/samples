@@ -6,14 +6,14 @@ go_grpc_library(
     go_deps = [
         "@com_github_golang_protobuf//ptypes/wrappers:go_default_library",
     ],
-    importpath = "github.com/advanced-grpc/samples/ch02/productinfo/go/product_info",
+    importpath = "github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info",
     deps = ["//ch02/productinfo/proto:productinfo_grpc"],
 )
 
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "github.com/advanced-grpc/samples/ch02/productinfo/go/client",
+    importpath = "github.com/grpc-up-and-running/samples/ch02/productinfo/go/client",
     visibility = ["//visibility:private"],
     deps = [
         ":go_product_info_proto",

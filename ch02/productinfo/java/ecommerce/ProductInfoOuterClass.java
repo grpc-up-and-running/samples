@@ -47,6 +47,11 @@ public final class ProductInfoOuterClass {
      */
     com.google.protobuf.ByteString
         getDescriptionBytes();
+
+    /**
+     * <code>float price = 4;</code>
+     */
+    float getPrice();
   }
   /**
    * Protobuf type {@code ecommerce.Product}
@@ -64,6 +69,7 @@ public final class ProductInfoOuterClass {
       id_ = "";
       name_ = "";
       description_ = "";
+      price_ = 0F;
     }
 
     @java.lang.Override
@@ -106,6 +112,11 @@ public final class ProductInfoOuterClass {
               java.lang.String s = input.readStringRequireUtf8();
 
               description_ = s;
+              break;
+            }
+            case 37: {
+
+              price_ = input.readFloat();
               break;
             }
             default: {
@@ -242,6 +253,15 @@ public final class ProductInfoOuterClass {
       }
     }
 
+    public static final int PRICE_FIELD_NUMBER = 4;
+    private float price_;
+    /**
+     * <code>float price = 4;</code>
+     */
+    public float getPrice() {
+      return price_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -265,6 +285,9 @@ public final class ProductInfoOuterClass {
       if (!getDescriptionBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, description_);
       }
+      if (price_ != 0F) {
+        output.writeFloat(4, price_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -282,6 +305,10 @@ public final class ProductInfoOuterClass {
       }
       if (!getDescriptionBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, description_);
+      }
+      if (price_ != 0F) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(4, price_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -305,6 +332,10 @@ public final class ProductInfoOuterClass {
           .equals(other.getName());
       result = result && getDescription()
           .equals(other.getDescription());
+      result = result && (
+          java.lang.Float.floatToIntBits(getPrice())
+          == java.lang.Float.floatToIntBits(
+              other.getPrice()));
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -322,6 +353,9 @@ public final class ProductInfoOuterClass {
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
       hash = (53 * hash) + getDescription().hashCode();
+      hash = (37 * hash) + PRICE_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getPrice());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -461,6 +495,8 @@ public final class ProductInfoOuterClass {
 
         description_ = "";
 
+        price_ = 0F;
+
         return this;
       }
 
@@ -490,6 +526,7 @@ public final class ProductInfoOuterClass {
         result.id_ = id_;
         result.name_ = name_;
         result.description_ = description_;
+        result.price_ = price_;
         onBuilt();
         return result;
       }
@@ -549,6 +586,9 @@ public final class ProductInfoOuterClass {
         if (!other.getDescription().isEmpty()) {
           description_ = other.description_;
           onChanged();
+        }
+        if (other.getPrice() != 0F) {
+          setPrice(other.getPrice());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -785,6 +825,32 @@ public final class ProductInfoOuterClass {
         onChanged();
         return this;
       }
+
+      private float price_ ;
+      /**
+       * <code>float price = 4;</code>
+       */
+      public float getPrice() {
+        return price_;
+      }
+      /**
+       * <code>float price = 4;</code>
+       */
+      public Builder setPrice(float value) {
+        
+        price_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float price = 4;</code>
+       */
+      public Builder clearPrice() {
+        
+        price_ = 0F;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -853,12 +919,13 @@ public final class ProductInfoOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n\022product_info.proto\022\tecommerce\032\036google/" +
-      "protobuf/wrappers.proto\"8\n\007Product\022\n\n\002id" +
+      "protobuf/wrappers.proto\"G\n\007Product\022\n\n\002id" +
       "\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\023\n\013description\030\003 \001(" +
-      "\t2\215\001\n\013ProductInfo\022>\n\naddProduct\022\022.ecomme" +
-      "rce.Product\032\034.google.protobuf.StringValu" +
-      "e\022>\n\ngetProduct\022\034.google.protobuf.String" +
-      "Value\032\022.ecommerce.Productb\006proto3"
+      "\t\022\r\n\005price\030\004 \001(\0022\215\001\n\013ProductInfo\022>\n\naddP" +
+      "roduct\022\022.ecommerce.Product\032\034.google.prot" +
+      "obuf.StringValue\022>\n\ngetProduct\022\034.google." +
+      "protobuf.StringValue\032\022.ecommerce.Product" +
+      "b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -878,7 +945,7 @@ public final class ProductInfoOuterClass {
     internal_static_ecommerce_Product_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ecommerce_Product_descriptor,
-        new java.lang.String[] { "Id", "Name", "Description", });
+        new java.lang.String[] { "Id", "Name", "Description", "Price", });
     com.google.protobuf.WrappersProto.getDescriptor();
   }
 
