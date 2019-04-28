@@ -1,7 +1,7 @@
-// Go to ${Advanced-gRPC}/samples/ch01/uc01
+// Go to ${grpc-up-and-running}/samples/ch02/productinfo
 // Optional: Execute protoc --go_out=plugins=grpc:golang/product_info product_info.proto
-// Execute go get -v github.com/advanced-grpc/samples/ch01/uc01/golang/product_info
-// Execute go run golang/product_info_client/main.go
+// Execute go get -v github.com/grpc-up-and-running/samples/ch02/productinfo/golang/product_info
+// Execute go run go/client/main.go
 
 package main
 
@@ -31,7 +31,7 @@ func main() {
 	// Contact the server and print out its response.
 	name := "Sumsung S10"
 	description := "Samsung Galaxy S10 is the latest smart phone, launched in February 2019"
-	price := 700.0
+	price := float32(700.0)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
