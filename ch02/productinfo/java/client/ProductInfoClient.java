@@ -24,6 +24,7 @@ public class ProductInfoClient {
                 ProductInfoOuterClass.Product.newBuilder()
                         .setName("Sumsung S10")
                         .setDescription("Samsung Galaxy S10 is the latest smart phone, launched in February 2019")
+                        .setPrice(700.0f)
                         .build());
         System.out.println(productID.getValue());
 

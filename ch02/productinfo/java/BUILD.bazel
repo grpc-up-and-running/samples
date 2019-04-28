@@ -6,7 +6,7 @@ java_grpc_library(
     name = "java_product_info_proto",
     has_services = True,
     deps = [
-        "//ch01/productinfo/proto:productinfo_grpc",
+        "//ch02/productinfo/proto:productinfo_grpc",
         "@com_google_protobuf//:wrappers_proto",
     ],
 )
