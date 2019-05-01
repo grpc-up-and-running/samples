@@ -1,58 +1,57 @@
-# Product Info Service and Client 
+# Chapter 2: Developing Product Info Service and Client 
 
 - Online retail scenario has a `` ProductInfo`` micro service which is responsible for managing the products and their
  information. The consumer of that service can add, remove, retrieve products via that service. 
 
 - ``ProductInfo`` service is implemented on `` Go``. 
 - One of the consumer of that service is written using ``Java``. 
-- This use case shows you can implement both ``ProductInfo`` service and its consumer. 
-
-## Prerequisite
-
-Install Bazel version 0.19.2
-
-Installation Step: https://docs.bazel.build/versions/master/install-os-x.html#install-with-installer-mac-os-x
-
+- This use case shows you can implement both ``ProductInfo`` service and its consumer.
 
 ## Go Server and Client
 
 ### Go Server
-Build Go Server
+To build gRPC Go server with Bazel, use the following command from sample directory
+``` javascript
+$ bazel build //ch01/productinfo/go/server:server
+```
 
-bazel build //ch01/productinfo/go/server:server
-
-Run Go Server
-
-bazel-bin/ch01/productinfo/go/server/darwin_amd64_stripped/server
+To spin up the Go microservice, run the following command from root directory.
+``` javascript
+$ bazel-bin/ch01/productinfo/go/server/darwin_amd64_stripped/server
+```
 
 ### Go Client
-Build Go Client
+To build gRPC Go Client with Bazel, use the following command from sample directory
+``` javascript
+$ bazel build //ch01/productinfo/go/client:client
+```
 
-bazel build //ch01/productinfo/go/client:client
-
-Run Go Client
-
-bazel-bin/ch01/productinfo/go/client/darwin_amd64_stripped/client
-
+To run gRPC Go Client and test microservice, use the following command from root directory.
+``` javascript
+$ bazel-bin/ch01/productinfo/go/client/darwin_amd64_stripped/client
+```
 
 ## Java Server and Client
 
 ### Java Server
-Build Java Server
+To build gRPC Java server with Bazel, use the following command from sample directory
+``` javascript
+$ bazel build //ch01/productinfo/java:server
+```
 
-bazel build //ch01/productinfo/java:server
-
-Run Java Server
-
-bazel-bin/ch01/productinfo/java/server
+To spin up the Java microservice, run the following command from root directory.
+``` javascript
+$ bazel-bin/ch01/productinfo/java/server
+```
 
 ### Java Client
 
-Build Java Client
+To build gRPC Java Client with Bazel, use the following command from sample directory
+``` javascript
+$ bazel build //ch01/productinfo/java:client
+```
 
-bazel build //ch01/productinfo/java:client
-
-Run Java Client
-
-bazel-bin/ch01/productinfo/java/client
-
+To run gRPC Java Client and test microservice, use the following command from root directory.
+``` javascript
+$ bazel-bin/ch01/productinfo/java/client
+```

@@ -8,7 +8,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 /**
- * Created by rayt on 5/16/16.
+ * gRPC client sample for productInfo service.
  */
 public class ProductInfoClient {
 
