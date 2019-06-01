@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+package ecommerce;
+
+service OrderInfo {
+    rpc getOrderStatus(google.protobuf.StringValue) returns (google.protobuf.StringValue);
+    rpc searchOrder(google.protobuf.StringValue) returns (Order);
+}
+
+message Order {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    float price = 4;
+    string status = 5;
+
+}
