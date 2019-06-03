@@ -5,8 +5,11 @@ import "google/protobuf/wrappers.proto";
 package ecommerce;
 
 service OrderInfo {
-    rpc getOrderStatus(google.protobuf.StringValue) returns (google.protobuf.StringValue);
-    rpc searchOrder(google.protobuf.StringValue) returns (Order);
+
+    rpc getOrderStatus(google.protobuf.StringValue) returns (Order);
+    rpc searchOrders(google.protobuf.StringValue) returns (stream Order);
+    rpc updatedOrders(stream Order) returns (google.protobuf.StringValue); 
+    rpc verifyOrder(stream Order) returns (stream Order); 
 }
 
 message Order {
@@ -15,5 +18,4 @@ message Order {
     string description = 3;
     float price = 4;
     string status = 5;
-
 }

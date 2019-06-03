@@ -103,22 +103,24 @@ func init() {
 func init() { proto.RegisterFile("order_service.proto", fileDescriptor_93a121d2d2ec3d32) }
 
 var fileDescriptor_93a121d2d2ec3d32 = []byte{
-	// 237 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x41, 0x4b, 0x03, 0x31,
-	0x10, 0x85, 0xd9, 0xb5, 0x5b, 0xd8, 0x29, 0x14, 0x19, 0x45, 0x42, 0x11, 0x59, 0x3c, 0xf5, 0x94,
-	0x82, 0x9e, 0xfd, 0x01, 0x82, 0x20, 0xb4, 0xe0, 0x55, 0xd2, 0xec, 0x74, 0x0d, 0x74, 0x37, 0x61,
-	0x92, 0xd5, 0x83, 0x7f, 0xc4, 0x9f, 0x2b, 0x4e, 0x54, 0x7a, 0xda, 0x5b, 0xde, 0x7c, 0x2f, 0x2f,
-	0x2f, 0x03, 0x17, 0x9e, 0x5b, 0xe2, 0xd7, 0x48, 0xfc, 0xee, 0x2c, 0xe9, 0xc0, 0x3e, 0x79, 0xac,
-	0xc9, 0xfa, 0xbe, 0x27, 0xb6, 0xb4, 0xba, 0xe9, 0xbc, 0xef, 0x8e, 0xb4, 0x11, 0xb0, 0x1f, 0x0f,
-	0x9b, 0x0f, 0x36, 0x21, 0x10, 0xc7, 0x6c, 0xbd, 0xfd, 0x84, 0xea, 0xf9, 0x27, 0x01, 0x97, 0x50,
-	0xba, 0x56, 0x15, 0x4d, 0xb1, 0xae, 0xb7, 0xa5, 0x6b, 0x11, 0x61, 0x36, 0x98, 0x9e, 0x54, 0x29,
-	0x13, 0x39, 0x63, 0x03, 0x8b, 0x96, 0xa2, 0x65, 0x17, 0x92, 0xf3, 0x83, 0x3a, 0x13, 0x74, 0x3a,
-	0xc2, 0x4b, 0xa8, 0x02, 0x3b, 0x4b, 0x6a, 0xd6, 0x14, 0xeb, 0x72, 0x9b, 0x05, 0x5e, 0xc1, 0x3c,
-	0x26, 0x93, 0xc6, 0xa8, 0x2a, 0xb9, 0xf2, 0xab, 0xee, 0xbe, 0x0a, 0xa8, 0xe5, 0xf5, 0xc7, 0xe1,
-	0xe0, 0xf1, 0x09, 0x96, 0x1d, 0x25, 0xd1, 0x3b, 0xe1, 0x78, 0xad, 0x73, 0x7b, 0xfd, 0xd7, 0x5e,
-	0xef, 0x12, 0xbb, 0xa1, 0x7b, 0x31, 0xc7, 0x91, 0x56, 0x93, 0x14, 0x1f, 0x60, 0x11, 0xc9, 0xb0,
-	0x7d, 0xcb, 0xdf, 0x9b, 0x8e, 0x3a, 0xd7, 0xff, 0x1b, 0xd3, 0xe2, 0xdf, 0xcf, 0xc5, 0x77, 0xff,
-	0x1d, 0x00, 0x00, 0xff, 0xff, 0xea, 0x12, 0xd3, 0x21, 0x60, 0x01, 0x00, 0x00,
+	// 270 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x8f, 0xc1, 0x4b, 0xc3, 0x30,
+	0x14, 0xc6, 0x49, 0x5d, 0x07, 0x7d, 0xd3, 0x21, 0x51, 0xa4, 0x14, 0x91, 0xe2, 0xa9, 0xa7, 0x6c,
+	0x28, 0xde, 0xe7, 0xd1, 0x93, 0xb0, 0x81, 0x57, 0xc9, 0x92, 0xd7, 0x1a, 0x58, 0x9b, 0xf0, 0x92,
+	0x4e, 0xc4, 0xbf, 0xc0, 0xff, 0x5a, 0x4c, 0xa7, 0x08, 0x05, 0xc1, 0x5b, 0xbe, 0xef, 0x7b, 0xef,
+	0x97, 0xef, 0xc1, 0x99, 0x25, 0x8d, 0xf4, 0xec, 0x91, 0xf6, 0x46, 0xa1, 0x70, 0x64, 0x83, 0xe5,
+	0x19, 0x2a, 0xdb, 0xb6, 0x48, 0x0a, 0x8b, 0xab, 0xc6, 0xda, 0x66, 0x87, 0x8b, 0x18, 0x6c, 0xfb,
+	0x7a, 0xf1, 0x4a, 0xd2, 0x39, 0x24, 0x3f, 0x8c, 0x5e, 0xbf, 0x43, 0xfa, 0xf8, 0x45, 0xe0, 0x73,
+	0x48, 0x8c, 0xce, 0x59, 0xc9, 0xaa, 0x6c, 0x9d, 0x18, 0xcd, 0x39, 0x4c, 0x3a, 0xd9, 0x62, 0x9e,
+	0x44, 0x27, 0xbe, 0x79, 0x09, 0x33, 0x8d, 0x5e, 0x91, 0x71, 0xc1, 0xd8, 0x2e, 0x3f, 0x8a, 0xd1,
+	0x6f, 0x8b, 0x9f, 0x43, 0xea, 0xc8, 0x28, 0xcc, 0x27, 0x25, 0xab, 0x92, 0xf5, 0x20, 0xf8, 0x05,
+	0x4c, 0x7d, 0x90, 0xa1, 0xf7, 0x79, 0x1a, 0x57, 0x0e, 0xea, 0xe6, 0x23, 0x81, 0x2c, 0xfe, 0xfe,
+	0xd0, 0xd5, 0x96, 0xaf, 0x60, 0xde, 0x60, 0x88, 0x7a, 0x13, 0x73, 0x7e, 0x29, 0x86, 0xf6, 0xe2,
+	0xbb, 0xbd, 0xd8, 0x04, 0x32, 0x5d, 0xf3, 0x24, 0x77, 0x3d, 0x16, 0xa7, 0xe2, 0xe7, 0x4c, 0x31,
+	0xdc, 0xb0, 0x82, 0x63, 0x8f, 0x92, 0xd4, 0x4b, 0x94, 0xff, 0xde, 0x5f, 0x32, 0x7e, 0x0f, 0x27,
+	0xbd, 0xd3, 0x32, 0xa0, 0x3e, 0x20, 0x46, 0x43, 0xc5, 0x9f, 0xd0, 0x8a, 0xf1, 0x3b, 0x98, 0xed,
+	0x91, 0x4c, 0xfd, 0x36, 0x74, 0x1a, 0x03, 0x46, 0x4e, 0xc5, 0x96, 0x6c, 0x3b, 0x8d, 0xb8, 0xdb,
+	0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xa5, 0xd5, 0x5f, 0xe8, 0xd1, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -133,8 +135,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type OrderInfoClient interface {
-	GetOrderStatus(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error)
-	SearchOrder(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*Order, error)
+	GetOrderStatus(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*Order, error)
+	SearchOrders(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (OrderInfo_SearchOrdersClient, error)
+	UpdatedOrders(ctx context.Context, opts ...grpc.CallOption) (OrderInfo_UpdatedOrdersClient, error)
+	VerifyOrder(ctx context.Context, opts ...grpc.CallOption) (OrderInfo_VerifyOrderClient, error)
 }
 
 type orderInfoClient struct {
@@ -145,8 +149,8 @@ func NewOrderInfoClient(cc *grpc.ClientConn) OrderInfoClient {
 	return &orderInfoClient{cc}
 }
 
-func (c *orderInfoClient) GetOrderStatus(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error) {
-	out := new(wrappers.StringValue)
+func (c *orderInfoClient) GetOrderStatus(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*Order, error) {
+	out := new(Order)
 	err := c.cc.Invoke(ctx, "/ecommerce.OrderInfo/getOrderStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -154,30 +158,126 @@ func (c *orderInfoClient) GetOrderStatus(ctx context.Context, in *wrappers.Strin
 	return out, nil
 }
 
-func (c *orderInfoClient) SearchOrder(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*Order, error) {
-	out := new(Order)
-	err := c.cc.Invoke(ctx, "/ecommerce.OrderInfo/searchOrder", in, out, opts...)
+func (c *orderInfoClient) SearchOrders(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (OrderInfo_SearchOrdersClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_OrderInfo_serviceDesc.Streams[0], "/ecommerce.OrderInfo/searchOrders", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &orderInfoSearchOrdersClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type OrderInfo_SearchOrdersClient interface {
+	Recv() (*Order, error)
+	grpc.ClientStream
+}
+
+type orderInfoSearchOrdersClient struct {
+	grpc.ClientStream
+}
+
+func (x *orderInfoSearchOrdersClient) Recv() (*Order, error) {
+	m := new(Order)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *orderInfoClient) UpdatedOrders(ctx context.Context, opts ...grpc.CallOption) (OrderInfo_UpdatedOrdersClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_OrderInfo_serviceDesc.Streams[1], "/ecommerce.OrderInfo/updatedOrders", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &orderInfoUpdatedOrdersClient{stream}
+	return x, nil
+}
+
+type OrderInfo_UpdatedOrdersClient interface {
+	Send(*Order) error
+	CloseAndRecv() (*wrappers.StringValue, error)
+	grpc.ClientStream
+}
+
+type orderInfoUpdatedOrdersClient struct {
+	grpc.ClientStream
+}
+
+func (x *orderInfoUpdatedOrdersClient) Send(m *Order) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *orderInfoUpdatedOrdersClient) CloseAndRecv() (*wrappers.StringValue, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(wrappers.StringValue)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *orderInfoClient) VerifyOrder(ctx context.Context, opts ...grpc.CallOption) (OrderInfo_VerifyOrderClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_OrderInfo_serviceDesc.Streams[2], "/ecommerce.OrderInfo/verifyOrder", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &orderInfoVerifyOrderClient{stream}
+	return x, nil
+}
+
+type OrderInfo_VerifyOrderClient interface {
+	Send(*Order) error
+	Recv() (*Order, error)
+	grpc.ClientStream
+}
+
+type orderInfoVerifyOrderClient struct {
+	grpc.ClientStream
+}
+
+func (x *orderInfoVerifyOrderClient) Send(m *Order) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *orderInfoVerifyOrderClient) Recv() (*Order, error) {
+	m := new(Order)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // OrderInfoServer is the server API for OrderInfo service.
 type OrderInfoServer interface {
-	GetOrderStatus(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error)
-	SearchOrder(context.Context, *wrappers.StringValue) (*Order, error)
+	GetOrderStatus(context.Context, *wrappers.StringValue) (*Order, error)
+	SearchOrders(*wrappers.StringValue, OrderInfo_SearchOrdersServer) error
+	UpdatedOrders(OrderInfo_UpdatedOrdersServer) error
+	VerifyOrder(OrderInfo_VerifyOrderServer) error
 }
 
 // UnimplementedOrderInfoServer can be embedded to have forward compatible implementations.
 type UnimplementedOrderInfoServer struct {
 }
 
-func (*UnimplementedOrderInfoServer) GetOrderStatus(ctx context.Context, req *wrappers.StringValue) (*wrappers.StringValue, error) {
+func (*UnimplementedOrderInfoServer) GetOrderStatus(ctx context.Context, req *wrappers.StringValue) (*Order, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrderStatus not implemented")
 }
-func (*UnimplementedOrderInfoServer) SearchOrder(ctx context.Context, req *wrappers.StringValue) (*Order, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchOrder not implemented")
+func (*UnimplementedOrderInfoServer) SearchOrders(req *wrappers.StringValue, srv OrderInfo_SearchOrdersServer) error {
+	return status.Errorf(codes.Unimplemented, "method SearchOrders not implemented")
+}
+func (*UnimplementedOrderInfoServer) UpdatedOrders(srv OrderInfo_UpdatedOrdersServer) error {
+	return status.Errorf(codes.Unimplemented, "method UpdatedOrders not implemented")
+}
+func (*UnimplementedOrderInfoServer) VerifyOrder(srv OrderInfo_VerifyOrderServer) error {
+	return status.Errorf(codes.Unimplemented, "method VerifyOrder not implemented")
 }
 
 func RegisterOrderInfoServer(s *grpc.Server, srv OrderInfoServer) {
@@ -202,22 +302,77 @@ func _OrderInfo_GetOrderStatus_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OrderInfo_SearchOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.StringValue)
-	if err := dec(in); err != nil {
+func _OrderInfo_SearchOrders_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(wrappers.StringValue)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(OrderInfoServer).SearchOrders(m, &orderInfoSearchOrdersServer{stream})
+}
+
+type OrderInfo_SearchOrdersServer interface {
+	Send(*Order) error
+	grpc.ServerStream
+}
+
+type orderInfoSearchOrdersServer struct {
+	grpc.ServerStream
+}
+
+func (x *orderInfoSearchOrdersServer) Send(m *Order) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _OrderInfo_UpdatedOrders_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(OrderInfoServer).UpdatedOrders(&orderInfoUpdatedOrdersServer{stream})
+}
+
+type OrderInfo_UpdatedOrdersServer interface {
+	SendAndClose(*wrappers.StringValue) error
+	Recv() (*Order, error)
+	grpc.ServerStream
+}
+
+type orderInfoUpdatedOrdersServer struct {
+	grpc.ServerStream
+}
+
+func (x *orderInfoUpdatedOrdersServer) SendAndClose(m *wrappers.StringValue) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *orderInfoUpdatedOrdersServer) Recv() (*Order, error) {
+	m := new(Order)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
-	if interceptor == nil {
-		return srv.(OrderInfoServer).SearchOrder(ctx, in)
+	return m, nil
+}
+
+func _OrderInfo_VerifyOrder_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(OrderInfoServer).VerifyOrder(&orderInfoVerifyOrderServer{stream})
+}
+
+type OrderInfo_VerifyOrderServer interface {
+	Send(*Order) error
+	Recv() (*Order, error)
+	grpc.ServerStream
+}
+
+type orderInfoVerifyOrderServer struct {
+	grpc.ServerStream
+}
+
+func (x *orderInfoVerifyOrderServer) Send(m *Order) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *orderInfoVerifyOrderServer) Recv() (*Order, error) {
+	m := new(Order)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
 	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/ecommerce.OrderInfo/SearchOrder",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderInfoServer).SearchOrder(ctx, req.(*wrappers.StringValue))
-	}
-	return interceptor(ctx, in, info, handler)
+	return m, nil
 }
 
 var _OrderInfo_serviceDesc = grpc.ServiceDesc{
@@ -228,11 +383,24 @@ var _OrderInfo_serviceDesc = grpc.ServiceDesc{
 			MethodName: "getOrderStatus",
 			Handler:    _OrderInfo_GetOrderStatus_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "searchOrder",
-			Handler:    _OrderInfo_SearchOrder_Handler,
+			StreamName:    "searchOrders",
+			Handler:       _OrderInfo_SearchOrders_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "updatedOrders",
+			Handler:       _OrderInfo_UpdatedOrders_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "verifyOrder",
+			Handler:       _OrderInfo_VerifyOrder_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "order_service.proto",
 }
