@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"net"
 
@@ -22,19 +23,53 @@ type server struct {
 	orderMap map[string]*pb.Order
 }
 
-func (s *server) GetOrderStatus(ctx context.Context, in *wrapper.StringValue) (*wrapper.StringValue, error) {
-	// value, exists := s.productMap[in.Value]
+func (s *server) GetOrderStatus(ctx context.Context, in *wrapper.StringValue) (*pb.Order, error) {
 
-	value := "Order Processed!"
-	// if exists {
-	// 	return value, nil
-	// }
-	return &wrapper.StringValue{Value: value}, nil
-	// return nil, errors.New("Product does not exist for the ID" + in.Value)
+	myOrder := new(pb.Order)
+	myOrder.Id = "100500"
+	myOrder.Name = "Sample Order"
+	myOrder.Description = "Order description of 100500 Sample Order"
+	return myOrder, nil
 }
 
-func (s *server) SearchOrder(ctx context.Context, req *wrappers.StringValue) (*pb.Order, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchOrder not implemented")
+func (s *server) SearchOrders(req *wrappers.StringValue, stream pb.OrderInfo_SearchOrdersServer) error {
+	myOrder := new(pb.Order)
+	myOrder.Id = "100500"
+	myOrder.Name = "Sample Search Order"
+	myOrder.Description = "Order description of 100500 Sample Search Order"
+
+	if err := stream.Send(myOrder); err != nil {
+		return err
+	}
+
+	order1 := new(pb.Order)
+	order1.Id = "100501"
+	order1.Name = "Sample Search Order 2"
+	order1.Description = "Order description of 100501 Sample Search Order 2"
+	stream.Send(order1)
+
+	return nil
+}
+
+func (s *server) UpdatedOrders(stream pb.OrderInfo_UpdatedOrdersServer) error {
+
+	ordersStr := ""
+	for {
+		order, err := stream.Recv()
+		if err == io.EOF {
+			// Finished reading order stream
+			return stream.SendAndClose(&wrapper.StringValue{Value: "Orders processed " + ordersStr})
+		}
+		// Process order
+
+		log.Printf("Order ID ", order.Id, " - Processed!")
+		ordersStr += order.Id + "\n"
+		// ...
+	}
+}
+
+func (s *server) VerifyOrder(stream pb.OrderInfo_VerifyOrderServer) error {
+	return status.Errorf(codes.Unimplemented, "method VerifyOrder not implemented")
 }
 
 func main() {
