@@ -17,8 +17,15 @@ const (
 	port = ":50051"
 )
 
+var orderMap = make(map[string]pb.Order)
+
 type server struct {
 	orderMap map[string]*pb.Order
+}
+
+func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.StringValue, error) {
+	orderMap[orderReq.Id] = *orderReq
+	return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
 }
 
 func (s *server) GetOrderStatus(ctx context.Context, in *wrapper.StringValue) (*pb.Order, error) {
