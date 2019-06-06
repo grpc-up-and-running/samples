@@ -10,9 +10,7 @@ import (
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	pb "github.com/grpc-up-and-running/samples/ch03/order-service/go/order_service"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
 )
 
 const (
@@ -32,7 +30,7 @@ func (s *server) GetOrderStatus(ctx context.Context, in *wrapper.StringValue) (*
 	return myOrder, nil
 }
 
-func (s *server) SearchOrders(req *wrappers.StringValue, stream pb.OrderInfo_SearchOrdersServer) error {
+func (s *server) SearchOrders(req *wrappers.StringValue, stream pb.OrderManagement_SearchOrdersServer) error {
 	myOrder := new(pb.Order)
 	myOrder.Id = "100500"
 	myOrder.Name = "Sample Search Order"
@@ -51,7 +49,7 @@ func (s *server) SearchOrders(req *wrappers.StringValue, stream pb.OrderInfo_Sea
 	return nil
 }
 
-func (s *server) UpdatedOrders(stream pb.OrderInfo_UpdatedOrdersServer) error {
+func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) error {
 
 	ordersStr := ""
 	for {
@@ -68,8 +66,16 @@ func (s *server) UpdatedOrders(stream pb.OrderInfo_UpdatedOrdersServer) error {
 	}
 }
 
-func (s *server) VerifyOrder(stream pb.OrderInfo_VerifyOrderServer) error {
-	return status.Errorf(codes.Unimplemented, "method VerifyOrder not implemented")
+func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) error {
+	order, _ := stream.Recv()
+	orderList := []string{"100500", "100501"}
+	comb := pb.CombinedShipment{Id: "123", OrderIDList: orderList, Status: "OK"}
+
+	log.Printf("Order ID ", order.Id, " - Processed!")
+
+	stream.Send(&comb)
+	return nil
+	//return status.Errorf(codes.Unimplemented, "method ProcessOrders not implemented")
 }
 
 func main() {
@@ -78,7 +84,8 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterOrderInfoServer(s, &server{})
+	pb.RegisterOrderManagementServer(s, &server{})
+	///	pb.RegisterOrderInfoServer(s, &server{})
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {

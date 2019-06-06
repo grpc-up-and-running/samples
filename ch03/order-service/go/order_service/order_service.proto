@@ -5,6 +5,7 @@ import "google/protobuf/wrappers.proto";
 package ecommerce;
 
 service OrderManagement {
+    rpc addOrder(Order) returns (google.protobuf.StringValue);
     rpc getOrderStatus(google.protobuf.StringValue) returns (Order);
     rpc searchOrders(google.protobuf.StringValue) returns (stream Order);
     rpc updateOrders(stream Order) returns (google.protobuf.StringValue); 

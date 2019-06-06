@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewOrderInfoClient(conn)
+	c := pb.NewOrderManagementClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -41,12 +41,21 @@ func main() {
 
 	// Update Orders
 	// Send stream or 'Orders' to the service.
-	streamU, _ := c.UpdatedOrders(ctx)
+	streamU, _ := c.UpdateOrders(ctx)
 
 	streamU.Send(order2)
 	streamU.Send(order3)
 
 	updateRes, _ := streamU.CloseAndRecv()
 	log.Printf("Update response : ", updateRes)
+
+	// Process Order
+	order4 := pb.Order{Id: "100600", Name: "Order for prc"}
+	streamProc, _ := c.ProcessOrders(ctx)
+	streamProc.Send(&order4)
+
+	combinedShipment, _ := streamProc.Recv()
+
+	log.Printf("Combined shipment ", combinedShipment.OrderIDList)
 
 }
