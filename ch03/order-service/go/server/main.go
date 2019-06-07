@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"strings"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
@@ -28,30 +29,25 @@ func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.St
 	return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
 }
 
-func (s *server) GetOrderStatus(ctx context.Context, in *wrapper.StringValue) (*pb.Order, error) {
-
-	myOrder := new(pb.Order)
-	myOrder.Id = "100500"
-	myOrder.Name = "Sample Order"
-	myOrder.Description = "Order description of 100500 Sample Order"
-	return myOrder, nil
+func (s *server) GetOrder(ctx context.Context, orderId *wrapper.StringValue) (*pb.Order, error) {
+	ord := orderMap[orderId.Value]
+	return &ord, nil
 }
 
-func (s *server) SearchOrders(req *wrappers.StringValue, stream pb.OrderManagement_SearchOrdersServer) error {
-	myOrder := new(pb.Order)
-	myOrder.Id = "100500"
-	myOrder.Name = "Sample Search Order"
-	myOrder.Description = "Order description of 100500 Sample Search Order"
+func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.OrderManagement_SearchOrdersServer) error {
 
-	if err := stream.Send(myOrder); err != nil {
-		return err
+	for key, order := range orderMap {
+		log.Print(key, order)
+		for _, itemStr := range order.Items {
+			log.Print(itemStr)
+			if strings.Contains(itemStr, searchQuery.Value) {
+				// Send the matching orders in a stream
+				stream.Send(&order)
+				log.Print("Matching Order Found : " + key)
+				break
+			}
+		}
 	}
-
-	order1 := new(pb.Order)
-	order1.Id = "100501"
-	order1.Name = "Sample Search Order 2"
-	order1.Description = "Order description of 100501 Sample Search Order 2"
-	stream.Send(order1)
 
 	return nil
 }
@@ -86,6 +82,7 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 }
 
 func main() {
+	initSampleData()
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -98,4 +95,12 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+}
+
+func initSampleData() {
+	orderMap["102"] = pb.Order{Id: "102", Items:[]string{"Google Pixel 3A", "Mac Book Pro"}, Destination:"Mountain View, CA", Price:1800.00}
+	orderMap["103"] = pb.Order{Id: "103", Items:[]string{"Apple Watch S4" }, Destination:"San Jose, CA", Price:400.00}
+	orderMap["104"] = pb.Order{Id: "104", Items:[]string{"Google Home Mini", "Google Nest Hub" }, Destination:"Mountain View, CA", Price:400.00}
+	orderMap["105"] = pb.Order{Id: "105", Items:[]string{"Amazon Echo"}, Destination:"San Jose, CA", Price:30.00}
+	orderMap["106"] = pb.Order{Id: "106", Items:[]string{"Amazon Echo", "Apple iPhone XS"}, Destination:"Mountain View, CA", Price:30.00}
 }
