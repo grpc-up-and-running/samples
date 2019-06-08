@@ -65,6 +65,20 @@ func main() {
 
 
 	//// Process Order
+
+	streamProcOrder, _ := c.ProcessOrders(ctx)
+	streamProcOrder.Send(&updOrder1)
+	streamProcOrder.Send(&updOrder2)
+	streamProcOrder.Send(&updOrder3)
+	streamProcOrder.Send(&order1)
+
+
+	for i := 0; i < 2; i++ {
+		combinedShipment, _ := streamProcOrder.Recv()
+		log.Printf("Combined shipment ", combinedShipment.OrderIDList)
+	}
+
+
 	//order4 := pb.Order{Id: "100600", Name: "Order for prc"}
 	//streamProc, _ := c.ProcessOrders(ctx)
 	//streamProc.Send(&order4)

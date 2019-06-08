@@ -16,9 +16,11 @@ import (
 
 const (
 	port = ":50051"
+	orderBatchSize = 3
 )
 
 var orderMap = make(map[string]pb.Order)
+var combinedShipmentMap = make(map[string]pb.CombinedShipment)
 
 type server struct {
 	orderMap map[string]*pb.Order
@@ -71,15 +73,30 @@ func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) erro
 }
 
 func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) error {
-	order, _ := stream.Recv()
-	orderList := []string{"100500", "100501"}
-	comb := pb.CombinedShipment{Id: "123", OrderIDList: orderList, Status: "OK"}
 
-	log.Printf("Order ID ", order.Id, " - Processed!")
+	i := 0
+	for i <= orderBatchSize {
+		order, _ := stream.Recv()
 
-	stream.Send(&comb)
+		shipment, found := combinedShipmentMap[orderMap[order.Id].Destination]
+
+		if found {
+			shipment.OrderIDList[1]= orderMap[order.Id].Id
+
+		} else {
+			orderList := make([]string, orderBatchSize)
+			orderList[0] = orderMap[order.Id].Id
+			comShip := pb.CombinedShipment{Id:"cmb" + order.Id, Status:"Processed!", OrderIDList:orderList}
+			combinedShipmentMap[orderMap[order.Id].Destination] = comShip
+		}
+		i++
+	}
+
+	for _, comb  := range combinedShipmentMap {
+		stream.Send(&comb)
+	}
+
 	return nil
-	//return status.Errorf(codes.Unimplemented, "method ProcessOrders not implemented")
 }
 
 func main() {
