@@ -48,26 +48,22 @@ func main() {
 		log.Print("Search Result : ", searchOrder)
 	}
 
-	//stream, _ := c.SearchOrders(ctx, &wrapper.StringValue{Value: "Foo"})
-	//order2, err2 := stream.Recv()
-	//if err2 != nil {
-	//	log.Fatalf("Error ")
-	//}
-	//log.Printf("Search Order : ", order2.Description)
-	//
-	//orderK, _ := stream.Recv()
-	//log.Printf("Search Order : ", orderK.Description)
-	//
-	//// Update Orders
-	//// Send stream or 'Orders' to the service.
-	//streamU, _ := c.UpdateOrders(ctx)
-	//
-	//streamU.Send(order2)
-	//streamU.Send(orderK)
-	//
-	//updateRes, _ := streamU.CloseAndRecv()
-	//log.Printf("Update response : ", updateRes)
-	//
+
+	// Update Orders
+
+	updOrder1 := pb.Order{Id: "102", Items:[]string{"Google Pixel 3A", "Google Pixel Book"}, Destination:"Mountain View, CA", Price:1100.00}
+	updOrder2 := pb.Order{Id: "103", Items:[]string{"Apple Watch S4", "Mac Book Pro", "iPad Pro"}, Destination:"San Jose, CA", Price:2800.00}
+	updOrder3 := pb.Order{Id: "104", Items:[]string{"Google Home Mini", "Google Nest Hub", "iPad Mini"}, Destination:"Mountain View, CA", Price:2200.00}
+
+	updateStream, _ := c.UpdateOrders(ctx)
+	_ = updateStream.Send(&updOrder1)
+	_ = updateStream.Send(&updOrder2)
+	_ = updateStream.Send(&updOrder3)
+
+	updateRes, _ := updateStream.CloseAndRecv()
+	log.Printf("Update Orders Res : ", updateRes)
+
+
 	//// Process Order
 	//order4 := pb.Order{Id: "100600", Name: "Order for prc"}
 	//streamProc, _ := c.ProcessOrders(ctx)

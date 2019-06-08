@@ -54,17 +54,18 @@ func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Order
 
 func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) error {
 
-	ordersStr := ""
+	ordersStr := "Updated Order IDs : "
 	for {
 		order, err := stream.Recv()
 		if err == io.EOF {
 			// Finished reading order stream
 			return stream.SendAndClose(&wrapper.StringValue{Value: "Orders processed " + ordersStr})
 		}
-		// Process order
+		// Update order
+		orderMap[order.Id] = *order
 
-		log.Printf("Order ID ", order.Id, " - Processed!")
-		ordersStr += order.Id + "\n"
+		log.Printf("Order ID ", order.Id, ": Updated")
+		ordersStr += order.Id + ", "
 		// ...
 	}
 }
