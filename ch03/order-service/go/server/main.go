@@ -85,26 +85,45 @@ func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) erro
 // Bi-directional Streaming RPC
 func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) error {
 
-	i := 0
-	for i <= orderBatchSize {
-		orderId, _ := stream.Recv()
-		shipment, found := combinedShipmentMap[orderMap[orderId.GetValue()].Destination]
+	for {
+		orderId, err := stream.Recv()
 
-		if found {
-			shipment.OrderIDList[1]= orderMap[orderId]
-
-		} else {
-			orderList := make([]string, orderBatchSize)
-			orderList[0] = orderMap[order.Id].Id
-			comShip := pb.CombinedShipment{Id:"cmb" + order.Id, Status:"Processed!", OrderIDList:orderList}
-			combinedShipmentMap[orderMap[order.Id].Destination] = comShip
+		if err == io.EOF {
+			return nil
 		}
-		i++
+		if err != nil {
+			return err
+		}
+
+		i := 0
+		for i <= orderBatchSize {
+			shipment, found := combinedShipmentMap[orderMap[orderId.GetValue()].Destination]
+
+			if found {
+				shipment.OrderIDList[1]= orderMap[orderId]
+
+			} else {
+				orderList := make([]string, orderBatchSize)
+
+				orderList[0] = orderMap[order.Id].Id
+				comShip := pb.CombinedShipment{Id:"cmb" + order.Id, Status:"Processed!", OrderIDList:orderList}
+				combinedShipmentMap[orderMap[order.Id].Destination] = comShip
+			}
+			i++
+		}
+
+		for _, comb  := range combinedShipmentMap {
+			stream.Send(&comb)
+		}
+
+
+
+
 	}
 
-	for _, comb  := range combinedShipmentMap {
-		stream.Send(&comb)
-	}
+
+
+
 
 	return nil
 }
