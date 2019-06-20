@@ -23,5 +23,5 @@ message Order {
 message CombinedShipment {
     string id = 1;
     string status = 2;
-    repeated string orderIDList = 3;
+    repeated Order orderIDList = 3;
 }

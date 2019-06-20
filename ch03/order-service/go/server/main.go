@@ -87,12 +87,11 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 
 	i := 0
 	for i <= orderBatchSize {
-		order, _ := stream.Recv()
-
-		shipment, found := combinedShipmentMap[orderMap[order.Id].Destination]
+		orderId, _ := stream.Recv()
+		shipment, found := combinedShipmentMap[orderMap[orderId.GetValue()].Destination]
 
 		if found {
-			shipment.OrderIDList[1]= orderMap[order.Id].Id
+			shipment.OrderIDList[1]= orderMap[orderId]
 
 		} else {
 			orderList := make([]string, orderBatchSize)
