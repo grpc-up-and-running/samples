@@ -100,6 +100,7 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 			shipment, found := combinedShipmentMap[orderMap[orderId.GetValue()].Destination]
 
 			if found {
+				
 				shipment.OrderIDList[1]= orderMap[orderId]
 
 			} else {
