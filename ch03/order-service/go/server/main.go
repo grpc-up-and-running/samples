@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"strings"
+	"time"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
@@ -26,16 +27,19 @@ type server struct {
 	orderMap map[string]*pb.Order
 }
 
+// Simple RPC
 func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.StringValue, error) {
 	orderMap[orderReq.Id] = *orderReq
 	return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
 }
 
+// Simple RPC
 func (s *server) GetOrder(ctx context.Context, orderId *wrapper.StringValue) (*pb.Order, error) {
 	ord := orderMap[orderId.Value]
 	return &ord, nil
 }
 
+// Server-side Streaming RPC
 func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.OrderManagement_SearchOrdersServer) error {
 
 	for key, order := range orderMap {
@@ -46,21 +50,27 @@ func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Order
 				// Send the matching orders in a stream
 				stream.Send(&order)
 				log.Print("Matching Order Found : " + key)
+				time.Sleep(4000 * time.Millisecond)
 				break
 			}
 		}
 	}
 
+	log.Print("EOF marked")
+
 	return nil
 }
 
+
+
+// Client-side Streaming RPC
 func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) error {
 
 	ordersStr := "Updated Order IDs : "
 	for {
 		order, err := stream.Recv()
 		if err == io.EOF {
-			// Finished reading order stream
+			// Finished reading the order stream.
 			return stream.SendAndClose(&wrapper.StringValue{Value: "Orders processed " + ordersStr})
 		}
 		// Update order
@@ -68,10 +78,11 @@ func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) erro
 
 		log.Printf("Order ID ", order.Id, ": Updated")
 		ordersStr += order.Id + ", "
-		// ...
 	}
 }
 
+
+// Bi-directional Streaming RPC
 func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) error {
 
 	i := 0
@@ -107,7 +118,6 @@ func main() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterOrderManagementServer(s, &server{})
-	///	pb.RegisterOrderInfoServer(s, &server{})
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {

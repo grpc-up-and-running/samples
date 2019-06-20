@@ -43,9 +43,13 @@ func main() {
 	for {
 		searchOrder, err := searchStream.Recv()
 		if err == io.EOF {
+			log.Print("EOF")
 			break
 		}
-		log.Print("Search Result : ", searchOrder)
+
+		if err == nil {
+			log.Print("Search Result : ", searchOrder)
+		}
 	}
 
 
@@ -64,8 +68,7 @@ func main() {
 	log.Printf("Update Orders Res : ", updateRes)
 
 
-	//// Process Order
-
+	// Process Order
 	streamProcOrder, _ := c.ProcessOrders(ctx)
 	streamProcOrder.Send(&updOrder1)
 	streamProcOrder.Send(&updOrder2)

@@ -9,7 +9,7 @@ service OrderManagement {
     rpc getOrder(google.protobuf.StringValue) returns (Order);
     rpc searchOrders(google.protobuf.StringValue) returns (stream Order);
     rpc updateOrders(stream Order) returns (google.protobuf.StringValue); 
-    rpc processOrders(stream Order) returns (stream CombinedShipment); 
+    rpc processOrders(stream google.protobuf.StringValue) returns (stream CombinedShipment);
 }
 
 message Order {
