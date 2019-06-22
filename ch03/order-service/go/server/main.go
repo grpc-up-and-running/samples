@@ -2,26 +2,23 @@ package main
 
 import (
 	"context"
-	"io"
-	"log"
-	"net"
-	"strings"
-	"time"
-
 	"github.com/golang/protobuf/ptypes/wrappers"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	pb "github.com/grpc-up-and-running/samples/ch03/order-service/go/order_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"io"
+	"log"
+	"net"
+	"strings"
 )
 
 const (
-	port = ":50051"
+	port           = ":50051"
 	orderBatchSize = 3
 )
 
 var orderMap = make(map[string]pb.Order)
-var combinedShipmentMap = make(map[string]pb.CombinedShipment)
 
 type server struct {
 	orderMap map[string]*pb.Order
@@ -50,18 +47,13 @@ func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Order
 				// Send the matching orders in a stream
 				stream.Send(&order)
 				log.Print("Matching Order Found : " + key)
-				time.Sleep(4000 * time.Millisecond)
 				break
 			}
 		}
 	}
 
-	log.Print("EOF marked")
-
 	return nil
 }
-
-
 
 // Client-side Streaming RPC
 func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) error {
@@ -81,53 +73,53 @@ func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) erro
 	}
 }
 
-
 // Bi-directional Streaming RPC
 func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) error {
 
+	batchMarker := 1
+	var combinedShipmentMap = make(map[string]pb.CombinedShipment)
 	for {
 		orderId, err := stream.Recv()
-
 		if err == io.EOF {
+			// Client has sent all the messages
+			// Send remaining shipments
+			for _, comb := range combinedShipmentMap {
+				stream.Send(&comb)
+			}
 			return nil
 		}
 		if err != nil {
 			return err
 		}
 
-		i := 0
-		for i <= orderBatchSize {
-			shipment, found := combinedShipmentMap[orderMap[orderId.GetValue()].Destination]
+		destination := orderMap[orderId.GetValue()].Destination
+		shipment, found := combinedShipmentMap[destination]
 
-			if found {
-				
-				shipment.OrderIDList[1]= orderMap[orderId]
+		if found {
+			ord := orderMap[orderId.GetValue()]
+			shipment.OrdersList = append(shipment.OrdersList, &ord)
+			combinedShipmentMap[destination] = shipment
+		} else {
+			comShip := pb.CombinedShipment{Id: "cmb - " + (orderMap[orderId.GetValue()].Destination), Status: "Processed!", }
+			ord := orderMap[orderId.GetValue()]
+			comShip.OrdersList = append(shipment.OrdersList, &ord)
+			combinedShipmentMap[destination] = comShip
+			log.Print(len(comShip.OrdersList), comShip.GetId())
+		}
 
-			} else {
-				orderList := make([]string, orderBatchSize)
-
-				orderList[0] = orderMap[order.Id].Id
-				comShip := pb.CombinedShipment{Id:"cmb" + order.Id, Status:"Processed!", OrderIDList:orderList}
-				combinedShipmentMap[orderMap[order.Id].Destination] = comShip
+		if batchMarker == orderBatchSize {
+			for _, comb := range combinedShipmentMap {
+				log.Print("Shipping : " , comb.Id, " -> ", len(comb.OrdersList))
+				stream.Send(&comb)
 			}
-			i++
+			batchMarker = 0
+			combinedShipmentMap = make(map[string]pb.CombinedShipment)
+		} else {
+			batchMarker++
 		}
-
-		for _, comb  := range combinedShipmentMap {
-			stream.Send(&comb)
-		}
-
-
-
-
 	}
-
-
-
-
-
-	return nil
 }
+
 
 func main() {
 	initSampleData()
@@ -145,9 +137,9 @@ func main() {
 }
 
 func initSampleData() {
-	orderMap["102"] = pb.Order{Id: "102", Items:[]string{"Google Pixel 3A", "Mac Book Pro"}, Destination:"Mountain View, CA", Price:1800.00}
-	orderMap["103"] = pb.Order{Id: "103", Items:[]string{"Apple Watch S4" }, Destination:"San Jose, CA", Price:400.00}
-	orderMap["104"] = pb.Order{Id: "104", Items:[]string{"Google Home Mini", "Google Nest Hub" }, Destination:"Mountain View, CA", Price:400.00}
-	orderMap["105"] = pb.Order{Id: "105", Items:[]string{"Amazon Echo"}, Destination:"San Jose, CA", Price:30.00}
-	orderMap["106"] = pb.Order{Id: "106", Items:[]string{"Amazon Echo", "Apple iPhone XS"}, Destination:"Mountain View, CA", Price:30.00}
+	orderMap["102"] = pb.Order{Id: "102", Items: []string{"Google Pixel 3A", "Mac Book Pro"}, Destination: "Mountain View, CA", Price: 1800.00}
+	orderMap["103"] = pb.Order{Id: "103", Items: []string{"Apple Watch S4"}, Destination: "San Jose, CA", Price: 400.00}
+	orderMap["104"] = pb.Order{Id: "104", Items: []string{"Google Home Mini", "Google Nest Hub"}, Destination: "Mountain View, CA", Price: 400.00}
+	orderMap["105"] = pb.Order{Id: "105", Items: []string{"Amazon Echo"}, Destination: "San Jose, CA", Price: 30.00}
+	orderMap["106"] = pb.Order{Id: "106", Items: []string{"Amazon Echo", "Apple iPhone XS"}, Destination: "Mountain View, CA", Price: 30.00}
 }
