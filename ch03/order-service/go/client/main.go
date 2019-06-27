@@ -23,7 +23,7 @@ func main() {
 	}
 	defer conn.Close()
 	c := pb.NewOrderManagementClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	// Add Order
@@ -64,31 +64,38 @@ func main() {
 	_ = updateStream.Send(&updOrder2)
 	_ = updateStream.Send(&updOrder3)
 
+
 	updateRes, _ := updateStream.CloseAndRecv()
 	log.Printf("Update Orders Res : ", updateRes)
-
 
 	// Process Order
 	streamProcOrder, _ := c.ProcessOrders(ctx)
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"102"})
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"103"})
+
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"104"})
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"101"})
 
-	streamProcOrder.CloseSend()
 
-	for i := 0; i < 3; i++ {
-		combinedShipment, _ := streamProcOrder.Recv()
-		log.Printf("Combined shipment ", combinedShipment.OrdersList)
+	channel := make(chan bool, 1)
+	go asncClientBidirectionalRPC(streamProcOrder, channel)
+
+	time.Sleep(time.Millisecond * 1000)
+	_ = streamProcOrder.CloseSend()
+
+
+
+	<- channel
+
+}
+
+func asncClientBidirectionalRPC (streamProcOrder pb.OrderManagement_ProcessOrdersClient, c chan bool) {
+	for {
+		combinedShipment, errProcOrder := streamProcOrder.Recv()
+		if errProcOrder == io.EOF {
+			break
+		}
+		log.Printf("Combined shipment : ", combinedShipment.OrdersList)
 	}
-
-
-	//order4 := pb.Order{Id: "100600", Name: "Order for prc"}
-	//streamProc, _ := c.ProcessOrders(ctx)
-	//streamProc.Send(&order4)
-	//
-	//combinedShipment, _ := streamProc.Recv()
-	//
-	//log.Printf("Combined shipment ", combinedShipment.OrderIDList)
-
+	c <- true
 }

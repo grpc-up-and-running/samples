@@ -80,15 +80,20 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 	var combinedShipmentMap = make(map[string]pb.CombinedShipment)
 	for {
 		orderId, err := stream.Recv()
+		log.Println("Reading Proc order ... ", orderId)
 		if err == io.EOF {
 			// Client has sent all the messages
 			// Send remaining shipments
+
+			log.Println("EOF ", orderId)
+
 			for _, comb := range combinedShipmentMap {
 				stream.Send(&comb)
 			}
 			return nil
 		}
 		if err != nil {
+			log.Println(err)
 			return err
 		}
 
