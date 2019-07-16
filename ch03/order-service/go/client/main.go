@@ -72,21 +72,17 @@ func main() {
 	streamProcOrder, _ := c.ProcessOrders(ctx)
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"102"})
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"103"})
-
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"104"})
-	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"101"})
-
 
 	channel := make(chan bool, 1)
 	go asncClientBidirectionalRPC(streamProcOrder, channel)
-
 	time.Sleep(time.Millisecond * 1000)
+
+
+	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"101"})
 	_ = streamProcOrder.CloseSend()
 
-
-
 	<- channel
-
 }
 
 func asncClientBidirectionalRPC (streamProcOrder pb.OrderManagement_ProcessOrdersClient, c chan bool) {

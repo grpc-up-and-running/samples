@@ -11,47 +11,47 @@
 
 ### Go Server
 To build gRPC Go server with Bazel, use the following command from sample directory
-``` javascript
-$ bazel build //ch01/productinfo/go/server:server
+``` 
+$ bazel build //ch02/productinfo/go/server:server
 ```
 
 To spin up the Go microservice, run the following command from root directory.
-``` javascript
-$ bazel-bin/ch01/productinfo/go/server/darwin_amd64_stripped/server
+``` 
+$ bazel-bin/ch02/productinfo/go/server/darwin_amd64_stripped/server
 ```
 
 ### Go Client
 To build gRPC Go Client with Bazel, use the following command from sample directory
-``` javascript
-$ bazel build //ch01/productinfo/go/client:client
+``` 
+$ bazel build //ch02/productinfo/go/client:client
 ```
 
 To run gRPC Go Client and test microservice, use the following command from root directory.
-``` javascript
-$ bazel-bin/ch01/productinfo/go/client/darwin_amd64_stripped/client
+``` 
+$ bazel-bin/ch02/productinfo/go/client/darwin_amd64_stripped/client
 ```
 
 ## Java Server and Client
 
 ### Java Server
 To build gRPC Java server with Bazel, use the following command from sample directory
-``` javascript
-$ bazel build //ch01/productinfo/java:server
+``` 
+$ bazel build //ch02/productinfo/java:server
 ```
 
 To spin up the Java microservice, run the following command from root directory.
-``` javascript
-$ bazel-bin/ch01/productinfo/java/server
+``` 
+$ bazel-bin/ch02/productinfo/java/server
 ```
 
 ### Java Client
 
 To build gRPC Java Client with Bazel, use the following command from sample directory
-``` javascript
-$ bazel build //ch01/productinfo/java:client
+``` 
+$ bazel build //ch02/productinfo/java:client
 ```
 
 To run gRPC Java Client and test microservice, use the following command from root directory.
-``` javascript
-$ bazel-bin/ch01/productinfo/java/client
+``` 
+$ bazel-bin/ch02/productinfo/java/client
 ```
