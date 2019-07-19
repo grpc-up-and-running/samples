@@ -67,3 +67,11 @@ go_repository(
     strip_prefix = "uuid-1.1.0",
     urls = ["https://github.com/google/uuid/archive/v1.1.0.tar.gz"],
 )
+
+http_archive(
+     name = "com_google_protobuf",
+     sha256 = "2244b0308846bb22b4ff0bcc675e99290ff9f1115553ae9671eba1030af31bc0",
+     strip_prefix = "protobuf-3.6.1.2",
+     urls = ["https://mirror.bazel.build/github.com/google/protobuf/archive/v3.6.1.2.tar.gz",
+         "https://github.com/protocolbuffers/protobuf/archive/v3.6.1.2.tar.gz"],
+)
