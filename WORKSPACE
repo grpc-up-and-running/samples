@@ -68,6 +68,22 @@ go_repository(
     urls = ["https://github.com/google/uuid/archive/v1.1.0.tar.gz"],
 )
 
+go_repository(
+    name = "com_google_cloud_go",
+    commit = "7808a7bf89ab1b3b840e00435c5404af438ec24d",
+    importpath = "cloud.google.com/go",
+    remote = "https://github.com/googleapis/google-cloud-go.git",
+    vcs = "git",
+)
+
+go_repository(
+    name = "org_golang_x_oauth2",
+    remote = "https://github.com/golang/oauth2.git",
+    vcs = "git",
+    commit = "fdc9e635145ae97e6c2cb777c48305600cf515cb",
+    importpath = "golang.org/x/oauth2",
+)
+
 http_archive(
      name = "com_google_protobuf",
      sha256 = "2244b0308846bb22b4ff0bcc675e99290ff9f1115553ae9671eba1030af31bc0",
