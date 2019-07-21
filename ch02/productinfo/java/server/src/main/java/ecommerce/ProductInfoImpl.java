@@ -1,8 +1,6 @@
-package server;
+package ecommerce;
 
 import com.google.protobuf.StringValue;
-import ecommerce.ProductInfoGrpc;
-import ecommerce.ProductInfoOuterClass;
 import io.grpc.Status;
 import io.grpc.StatusException;
 
@@ -12,7 +10,7 @@ import java.util.UUID;
 
 public class ProductInfoImpl extends ProductInfoGrpc.ProductInfoImplBase {
 
-    private Map<String, ProductInfoOuterClass.Product> productMap = new HashMap();
+    private Map productMap = new HashMap<String, ProductInfoOuterClass.Product>();
 
     @Override
     public void addProduct(ProductInfoOuterClass.Product request, io.grpc.stub.StreamObserver<StringValue> responseObserver) {
@@ -28,7 +26,7 @@ public class ProductInfoImpl extends ProductInfoGrpc.ProductInfoImplBase {
     public void getProduct(StringValue request, io.grpc.stub.StreamObserver<ProductInfoOuterClass.Product> responseObserver) {
         String id = request.getValue();
         if (productMap.containsKey(id)) {
-            responseObserver.onNext(productMap.get(id));
+            responseObserver.onNext((ProductInfoOuterClass.Product) productMap.get(id));
             responseObserver.onCompleted();
         } else {
             responseObserver.onError(new StatusException(Status.NOT_FOUND));

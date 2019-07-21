@@ -14,8 +14,8 @@ java_grpc_library(
 java_library(
     name = "serverlib",
     srcs = [
-        "server/ProductInfoServer.java",
-        "server/ProductInfoImpl.java",
+        "server/src/main/java/ecommerce/ProductInfoServer.java",
+        "server/src/main/java/ecommerce/ProductInfoImpl.java",
     ],
     deps = [
         ":java_product_info_proto",
@@ -25,7 +25,7 @@ java_library(
 
 java_binary(
     name = "server",
-    main_class = "server.ProductInfoServer",
+    main_class = "ecommerce.ProductInfoServer",
     runtime_deps = [
         ":serverlib",
         "@io_grpc_grpc_java//netty:netty",
@@ -35,9 +35,9 @@ java_binary(
 java_binary(
     name = "client",
     srcs = [
-        "client/ProductInfoClient.java",
+        "client/src/main/java/ecommerce/ProductInfoClient.java",
     ],
-    main_class = "client.ProductInfoClient",
+    main_class = "ecommerce.ProductInfoClient",
     deps = [
         ":java_product_info_proto",
         ":serverlib",

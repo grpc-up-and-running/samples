@@ -1,4 +1,4 @@
-package server;
+package ecommerce;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;

@@ -1,7 +1,5 @@
-package client;
+package ecommerce;
 
-import ecommerce.ProductInfoGrpc;
-import ecommerce.ProductInfoOuterClass;
 import com.google.protobuf.StringValue;
 
 import io.grpc.ManagedChannel;
