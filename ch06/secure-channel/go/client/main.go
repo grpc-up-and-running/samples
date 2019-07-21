@@ -22,7 +22,7 @@ const (
 )
 
 func main() {
-	creds, err := credentials.NewClientTLSFromFile(filepath.Join("ch05", "secure-channel", "certs", "server.crt"),
+	creds, err := credentials.NewClientTLSFromFile(filepath.Join("ch06", "secure-channel", "certs", "server.crt"),
 		"localhost")
 	if err != nil {
 		log.Fatalf("failed to load credentials: %v", err)

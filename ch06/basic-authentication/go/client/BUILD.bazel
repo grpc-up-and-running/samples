@@ -13,7 +13,7 @@ go_grpc_library(
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "github.com/grpc-up-and-running/samples/ch05/basic-authentication/go/client",
+    importpath = "github.com/grpc-up-and-running/samples/ch06/basic-authentication/go/client",
     visibility = ["//visibility:private"],
     deps = [
         ":go_product_info_proto",

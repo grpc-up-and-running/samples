@@ -13,14 +13,10 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/status"
 	"log"
 	"net"
 	"path/filepath"
-	"strings"
 )
 
 const (
@@ -31,11 +27,6 @@ const (
 type server struct {
 	productMap map[string]*pb.Product
 }
-
-var (
-	errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata")
-	errInvalidToken    = status.Errorf(codes.Unauthenticated, "invalid token")
-)
 
 // AddProduct implements ecommerce.AddProduct
 func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.StringValue, error) {
@@ -61,25 +52,14 @@ func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.P
 }
 
 func main() {
-	//abs, err := filepath.Abs("server.crt");
-	//if err != nil {
-	//	log.Fatalf("abs xxxx: %s", err)
-	//}
-
-	//_, err := os.Open(filepath.Join("ch05", "secure-channel", "certs", "server.crt"))
-	//if err != nil {
-	//	log.Fatalf("xxxxxxx: %s", err)
-	//}
-	cert, err := tls.LoadX509KeyPair(filepath.Join("ch05", "secure-channel", "certs", "server.crt"),
-		filepath.Join("ch05", "secure-channel", "certs", "server.key"))
+	cert, err := tls.LoadX509KeyPair(filepath.Join("ch06", "secure-channel", "certs", "server.crt"),
+		filepath.Join("ch06", "secure-channel", "certs", "server.key"))
 	if err != nil {
 		log.Fatalf("failed to load key pair: %s", err)
 	}
 	opts := []grpc.ServerOption{
 		// Enable TLS for all incoming connections.
 		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
-
-		grpc.UnaryInterceptor(ensureValidToken),
 	}
 
 	s := grpc.NewServer(opts...)
@@ -95,34 +75,4 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
-}
-
-// valid validates the authorization.
-func valid(authorization []string) bool {
-	if len(authorization) < 1 {
-		return false
-	}
-	token := strings.TrimPrefix(authorization[0], "Bearer ")
-	// Perform the token validation here. For the sake of this example, the code
-	// here forgoes any of the usual OAuth2 token validation and instead checks
-	// for a token matching an arbitrary string.
-	return token == "some-secret-token"
-}
-
-// ensureValidToken ensures a valid token exists within a request's metadata. If
-// the token is missing or invalid, the interceptor blocks execution of the
-// handler and returns an error. Otherwise, the interceptor invokes the unary
-// handler.
-func ensureValidToken(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, errMissingMetadata
-	}
-	// The keys within metadata.MD are normalized to lowercase.
-	// See: https://godoc.org/google.golang.org/grpc/metadata#New
-	if !valid(md["authorization"]) {
-		return nil, errInvalidToken
-	}
-	// Continue execution of handler after ensuring a valid token.
-	return handler(ctx, req)
 }

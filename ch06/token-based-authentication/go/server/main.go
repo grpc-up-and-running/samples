@@ -8,7 +8,6 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"encoding/base64"
 	"errors"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/uuid"
@@ -35,7 +34,7 @@ type server struct {
 
 var (
 	errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata")
-	errInvalidToken    = status.Errorf(codes.Unauthenticated, "invalid credentials")
+	errInvalidToken    = status.Errorf(codes.Unauthenticated, "invalid token")
 )
 
 // AddProduct implements ecommerce.AddProduct
@@ -62,17 +61,8 @@ func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.P
 }
 
 func main() {
-	//abs, err := filepath.Abs("server.crt");
-	//if err != nil {
-	//	log.Fatalf("abs xxxx: %s", err)
-	//}
-
-	//_, err := os.Open(filepath.Join("ch05", "secure-channel", "certs", "server.crt"))
-	//if err != nil {
-	//	log.Fatalf("xxxxxxx: %s", err)
-	//}
-	cert, err := tls.LoadX509KeyPair(filepath.Join("ch05", "secure-channel", "certs", "server.crt"),
-		filepath.Join("ch05", "secure-channel", "certs", "server.key"))
+	cert, err := tls.LoadX509KeyPair(filepath.Join("ch06", "secure-channel", "certs", "server.crt"),
+		filepath.Join("ch06", "secure-channel", "certs", "server.key"))
 	if err != nil {
 		log.Fatalf("failed to load key pair: %s", err)
 	}
@@ -80,7 +70,7 @@ func main() {
 		// Enable TLS for all incoming connections.
 		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
 
-		grpc.UnaryInterceptor(ensureValidBasicCredentials),
+		grpc.UnaryInterceptor(ensureValidToken),
 	}
 
 	s := grpc.NewServer(opts...)
@@ -103,19 +93,18 @@ func valid(authorization []string) bool {
 	if len(authorization) < 1 {
 		return false
 	}
-	token := strings.TrimPrefix(authorization[0], "Basic ")
+	token := strings.TrimPrefix(authorization[0], "Bearer ")
 	// Perform the token validation here. For the sake of this example, the code
 	// here forgoes any of the usual OAuth2 token validation and instead checks
 	// for a token matching an arbitrary string.
-	return token == base64.StdEncoding.EncodeToString([]byte("admin:admin"))
+	return token == "some-secret-token"
 }
 
 // ensureValidToken ensures a valid token exists within a request's metadata. If
 // the token is missing or invalid, the interceptor blocks execution of the
 // handler and returns an error. Otherwise, the interceptor invokes the unary
 // handler.
-func ensureValidBasicCredentials(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
-	handler grpc.UnaryHandler) (interface{}, error) {
+func ensureValidToken(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return nil, errMissingMetadata
