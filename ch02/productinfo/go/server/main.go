@@ -1,5 +1,5 @@
 // Go to ${grpc-up-and-running}/samples/ch02/productinfo
-// Optional: Execute protoc --go_out=plugins=grpc:golang/product_info product_info.proto
+// Optional: Execute protoc -I proto proto/product_info.proto --go_out=plugins=grpc:go/product_info
 // Execute go get -v github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info
 // Execute go run go/server/main.go
 
