@@ -93,14 +93,13 @@ func main() {
 
 	channel := make(chan bool, 1)
 
-
-
 	go asncClientBidirectionalRPC(streamProcOrder, channel)
 	time.Sleep(time.Millisecond * 1000)
 
-
+	// Cancelling the RPC
 	log.Println("RPC Cancelled.")
 	cancel()
+
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"101"})
 	_ = streamProcOrder.CloseSend()
 
