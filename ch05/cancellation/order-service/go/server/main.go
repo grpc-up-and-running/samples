@@ -11,7 +11,6 @@ import (
 	"log"
 	"net"
 	"strings"
-	"time"
 )
 
 const (
@@ -29,11 +28,6 @@ type server struct {
 func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.StringValue, error) {
 	orderMap[orderReq.Id] = *orderReq
 
-	sleepDuration  := 5
-	log.Println("Sleeping for :",  sleepDuration, "s")
-
-	time.Sleep(time.Duration(sleepDuration) * time.Second)
-
 	log.Println("Order : ",  orderReq.Id, " -> Added")
 	return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
 }
@@ -41,6 +35,8 @@ func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.St
 // Simple RPC
 func (s *server) GetOrder(ctx context.Context, orderId *wrapper.StringValue) (*pb.Order, error) {
 	ord := orderMap[orderId.Value]
+
+	log.Println("Get Order : ", ord.Id)
 	return &ord, nil
 }
 
