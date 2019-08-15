@@ -34,6 +34,11 @@ func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.St
 
 	time.Sleep(time.Duration(sleepDuration) * time.Second)
 
+	if ctx.Err() == context.DeadlineExceeded {
+		log.Printf("RPC has reached deadline exceeded state : %s", ctx.Err())
+		return nil, ctx.Err()
+	}
+
 	log.Println("Order : ",  orderReq.Id, " -> Added")
 	return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
 }
