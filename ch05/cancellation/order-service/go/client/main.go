@@ -23,7 +23,8 @@ func main() {
 	defer conn.Close()
 	client := pb.NewOrderManagementClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second * 5)
+	// ctx, cancel := context.WithTimeout(context.Background(), time.Second * 5)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	// Add Order
@@ -97,8 +98,8 @@ func main() {
 	time.Sleep(time.Millisecond * 1000)
 
 	// Cancelling the RPC
-	log.Println("RPC Cancelled.")
-	cancel()
+	//log.Println("RPC Cancelled.")
+	//cancel()
 
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"101"})
 	_ = streamProcOrder.CloseSend()
@@ -111,7 +112,7 @@ func main() {
 func asncClientBidirectionalRPC (streamProcOrder pb.OrderManagement_ProcessOrdersClient, c chan bool) {
 	for {
 		combinedShipment, errProcOrder := streamProcOrder.Recv()
-		if (errProcOrder != nil) {
+		if errProcOrder != nil {
 			log.Printf("Error Rec %v", errProcOrder)
 			break
 		} else {

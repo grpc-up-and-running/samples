@@ -79,26 +79,36 @@ func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) erro
 func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) error {
 
 	batchMarker := 1
+
+	// Cancel from Server Side
+	//_, cancel := context.WithCancel(stream.Context())
+	//cancel()
+
+
 	var combinedShipmentMap = make(map[string]pb.CombinedShipment)
 	for {
+		// You can determine whether the current RPC is cancelled by the other party.
+		if stream.Context().Err() == context.Canceled {
+			log.Printf(" Context Cacelled for this stream: -> %s", stream.Context().Err())
+			log.Printf("Stopped processing any more order of this stream!")
+			return stream.Context().Err()
+		}
 		orderId, err := stream.Recv()
 		log.Println("Reading Proc order ... ", orderId)
+
+
+
+
 		if err == io.EOF {
 			// Client has sent all the messages
 			// Send remaining shipments
-
-			log.Println("EOF ", orderId)
+			log.Println("EOF for ", orderId)
 
 			for _, comb := range combinedShipmentMap {
 				stream.Send(&comb)
 			}
 			return nil
 		}
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-
 		destination := orderMap[orderId.GetValue()].Destination
 		shipment, found := combinedShipmentMap[destination]
 
