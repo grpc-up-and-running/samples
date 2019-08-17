@@ -81,8 +81,8 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 	batchMarker := 1
 
 	// Cancel from Server Side
-	//_, cancel := context.WithCancel(stream.Context())
-	//cancel()
+	_, cancel := context.WithCancel(stream.Context())
+	cancel()
 
 
 	var combinedShipmentMap = make(map[string]pb.CombinedShipment)
