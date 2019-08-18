@@ -6,7 +6,7 @@ ENV GOPATH /go
 
 # Copy the local package files to the container's workspace.
 ADD server /go/src/github.com/grpc-up-and-running/samples/ch02/productinfo/go/server
-ADD product_info /go/src/github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info
+ADD proto /go/src/github.com/grpc-up-and-running/samples/ch02/productinfo/go/proto
 
 WORKDIR /go/src/github.com/grpc-up-and-running/samples/ch02/productinfo/go/server
 

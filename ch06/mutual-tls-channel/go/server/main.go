@@ -1,5 +1,5 @@
 // Go to ${grpc-up-and-running}/samples/ch02/productinfo
-// Optional: Execute protoc -I proto proto/product_info.proto --go_out=plugins=grpc:go/product_info
+// Optional: Execute protoc --go_out=plugins=grpc:golang/product_info product_info.proto
 // Execute go get -v github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info
 // Execute go run go/server/main.go
 
@@ -7,15 +7,18 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"errors"
-	"log"
-	"net"
-
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/uuid"
 	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/proto"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/credentials"
+	"io/ioutil"
+	"log"
+	"net"
+	"path/filepath"
 )
 
 const (
@@ -50,16 +53,56 @@ func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.P
 	return nil, errors.New("Product does not exist for the ID" + in.Value)
 }
 
+var (
+	crt = filepath.Join("ch06", "mutual-tls-channel", "certs", "server.crt")
+	key = filepath.Join("ch06", "mutual-tls-channel", "certs", "server.key")
+	ca = filepath.Join("ch06", "mutual-tls-channel", "certs", "ca.crt")
+)
 func main() {
+	certificate, err := tls.LoadX509KeyPair(crt, key)
+	if err != nil {
+		log.Fatalf("failed to load key pair: %s", err)
+		return
+	}
+
+	// Create a certificate pool from the certificate authority
+	certPool := x509.NewCertPool()
+	ca, err := ioutil.ReadFile(ca)
+	if err != nil {
+		log.Fatalf("could not read ca certificate: %s", err)
+		return
+	}
+
+	// Append the client certificates from the CA
+	if ok := certPool.AppendCertsFromPEM(ca); !ok {
+		log.Fatalf("failed to append client certs")
+		return
+	}
+
+	opts := []grpc.ServerOption{
+		// Enable TLS for all incoming connections.
+		grpc.Creds(    // Create the TLS credentials
+			credentials.NewTLS(&tls.Config {
+				ClientAuth:   tls.RequireAndVerifyClientCert,
+				Certificates: []tls.Certificate{certificate},
+				ClientCAs:    certPool,
+				},
+			)),
+	}
+
+	s := grpc.NewServer(opts...)
+	pb.RegisterProductInfoServer(s, &server{})
+	// Register reflection service on gRPC server.
+	//reflection.Register(s)
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
+		return
 	}
-	s := grpc.NewServer()
-	pb.RegisterProductInfoServer(s, &server{})
-	// Register reflection service on gRPC server.
-	reflection.Register(s)
+
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
+		return
 	}
 }

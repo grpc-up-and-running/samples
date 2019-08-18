@@ -7,7 +7,10 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"google.golang.org/grpc/credentials"
+	"io/ioutil"
 	"log"
 	"path/filepath"
 	"time"
@@ -19,29 +22,57 @@ import (
 
 const (
 	address = "localhost:50051"
+	serverName = "localhost"
+)
+
+var (
+	crt = filepath.Join("ch06", "mutual-tls-channel", "certs", "client.crt")
+	key = filepath.Join("ch06", "mutual-tls-channel", "certs", "client.key")
+	ca = filepath.Join("ch06", "mutual-tls-channel", "certs", "ca.crt")
 )
 
 func main() {
-	creds, err := credentials.NewClientTLSFromFile(filepath.Join("ch06", "secure-channel", "certs", "server.crt"),
-		"localhost")
+	// Load the client certificates from disk
+	certificate, err := tls.LoadX509KeyPair(crt, key)
 	if err != nil {
-		log.Fatalf("failed to load credentials: %v", err)
+		log.Fatalf("could not load client key pair: %s", err)
+		return
 	}
+
+	// Create a certificate pool from the certificate authority
+	certPool := x509.NewCertPool()
+	ca, err := ioutil.ReadFile(ca)
+	if err != nil {
+		log.Fatalf("could not read ca certificate: %s", err)
+		return
+	}
+
+	// Append the certificates from the CA
+	if ok := certPool.AppendCertsFromPEM(ca); !ok {
+		log.Fatalf("failed to append ca certs")
+		return
+	}
+
 	opts := []grpc.DialOption{
 		// transport credentials.
-		grpc.WithTransportCredentials(creds),
+		grpc.WithTransportCredentials( credentials.NewTLS(&tls.Config{
+			ServerName:   serverName, // NOTE: this is required!
+			Certificates: []tls.Certificate{certificate},
+			RootCAs:      certPool,
+		})),
 	}
 
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, opts...)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
+		return
 	}
 	defer conn.Close()
 	c := pb.NewProductInfoClient(conn)
 
 	// Contact the server and print out its response.
-	name := "Sumsung S10"
+	name := "Samsung S10"
 	description := "Samsung Galaxy S10 is the latest smart phone, launched in February 2019"
 	price := float32(700.0)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -56,5 +87,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not get product: %v", err)
 	}
-	log.Printf("Product: ", product.String())
+	log.Printf("Product: %s", product.String())
 }
