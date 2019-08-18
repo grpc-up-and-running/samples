@@ -98,8 +98,8 @@ func main() {
 	time.Sleep(time.Millisecond * 1000)
 
 	// Cancelling the RPC
-	//log.Println("RPC Cancelled.")
-	//cancel()
+	cancel()
+	log.Printf("RPC Status : %s", ctx.Err())
 
 	_ = streamProcOrder.Send(&wrapper.StringValue{Value:"101"})
 	_ = streamProcOrder.CloseSend()
@@ -113,13 +113,13 @@ func asncClientBidirectionalRPC (streamProcOrder pb.OrderManagement_ProcessOrder
 	for {
 		combinedShipment, errProcOrder := streamProcOrder.Recv()
 		if errProcOrder != nil {
-			log.Printf("Error Rec %v", errProcOrder)
+			log.Printf("Error Receiving messages %v", errProcOrder)
 			break
 		} else {
 			if errProcOrder == io.EOF {
 				break
 			}
-			log.Printf("Combined shipment : ", combinedShipment.OrdersList)
+			log.Printf("Combined shipment : %s", combinedShipment.OrdersList)
 		}
 	}
 	c <- true

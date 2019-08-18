@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
-	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	pb "github.com/grpc-up-and-running/samples/ch05/inteceptors/order-service/go/order-service-gen"
+	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
@@ -33,20 +33,18 @@ func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.St
 
 	if orderReq.Id == "-1" {
 		log.Printf("Order ID is invalid! -> Received Order ID %s", orderReq.Id)
-		//st := status.New(codes.ResourceExhausted, "Request limit exceeded.")
 
-		st := status.New(codes.InvalidArgument, "Invalid information received")
-
-
-		ds, err := st.WithDetails(
+		errorStatus := status.New(codes.InvalidArgument, "Invalid information received")
+		ds, err := errorStatus.WithDetails(
 			&epb.BadRequest_FieldViolation{
 				Field:"ID",
 				Description: fmt.Sprintf("Order ID received is not valid %s : %s", orderReq.Id, orderReq.Description),
 			},
 		)
 		if err != nil {
-			return nil, st.Err()
+			return nil, errorStatus.Err()
 		}
+
 		return nil, ds.Err()
 	} else {
 		orderMap[orderReq.Id] = *orderReq
