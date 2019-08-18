@@ -11,7 +11,6 @@ import (
 	"log"
 	"net"
 	"strings"
-	"time"
 )
 
 const (
@@ -28,6 +27,7 @@ type server struct {
 // Simple RPC
 func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.StringValue, error) {
 	orderMap[orderReq.Id] = *orderReq
+
 	log.Println("Order : ",  orderReq.Id, " -> Added")
 	return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
 }
@@ -35,6 +35,8 @@ func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.St
 // Simple RPC
 func (s *server) GetOrder(ctx context.Context, orderId *wrapper.StringValue) (*pb.Order, error) {
 	ord := orderMap[orderId.Value]
+
+	log.Println("Get Order : ", ord.Id)
 	return &ord, nil
 }
 
@@ -51,6 +53,7 @@ func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Order
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -76,26 +79,36 @@ func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) erro
 func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) error {
 
 	batchMarker := 1
+
+	// Cancel from Server Side
+	_, cancel := context.WithCancel(stream.Context())
+	cancel()
+
+
 	var combinedShipmentMap = make(map[string]pb.CombinedShipment)
 	for {
+		// You can determine whether the current RPC is cancelled by the other party.
+		if stream.Context().Err() == context.Canceled {
+			log.Printf(" Context Cacelled for this stream: -> %s", stream.Context().Err())
+			log.Printf("Stopped processing any more order of this stream!")
+			return stream.Context().Err()
+		}
 		orderId, err := stream.Recv()
 		log.Println("Reading Proc order ... ", orderId)
+
+
+
+
 		if err == io.EOF {
 			// Client has sent all the messages
 			// Send remaining shipments
-
-			log.Println("EOF ", orderId)
+			log.Println("EOF for ", orderId)
 
 			for _, comb := range combinedShipmentMap {
 				stream.Send(&comb)
 			}
 			return nil
 		}
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-
 		destination := orderMap[orderId.GetValue()].Destination
 		shipment, found := combinedShipmentMap[destination]
 
@@ -124,66 +137,13 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 	}
 }
 
-
-// Server :: Unary Interceptor
-func orderUnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	// Pre-processing logic
-	// Gets info about the current RPC call by examining the args passed in
-	log.Println("======= [Server Interceptor] ", info.FullMethod)
-	log.Printf(" Pre Proc Message : %s", req)
-
-
-	// Invoking the handler to complete the normal execution of a unary RPC.
-	m, err := handler(ctx, req)
-
-	// Post processing logic
-	log.Printf(" Post Proc Message : %s", m)
-	return m, err
-}
-
-
-// wrappedStream wraps around the embedded grpc.ServerStream, and intercepts the RecvMsg and
-// SendMsg method call.
-type wrappedStream struct {
-	grpc.ServerStream
-}
-
-func (w *wrappedStream) RecvMsg(m interface{}) error {
-	log.Printf("====== [Server Stream Interceptor Wrapper] Receive a message (Type: %T) at %s", m, time.Now().Format(time.RFC3339))
-	return w.ServerStream.RecvMsg(m)
-}
-
-func (w *wrappedStream) SendMsg(m interface{}) error {
-	log.Printf("====== [Server Stream Interceptor Wrapper] Send a message (Type: %T) at %v", m, time.Now().Format(time.RFC3339))
-	return w.ServerStream.SendMsg(m)
-}
-
-func newWrappedStream(s grpc.ServerStream) grpc.ServerStream {
-	return &wrappedStream{s}
-}
-
-
-func orderServerStreamInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-	// Pre-processing
-	log.Println("====== [Server Stream Interceptor] ", info.FullMethod)
-
-	// Invoking the StreamHandler to complete the execution of RPC invocation
-	err := handler(srv, newWrappedStream(ss))
-	if err != nil {
-		log.Printf("RPC failed with error %v", err)
-	}
-	return err
-}
-
 func main() {
 	initSampleData()
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := grpc.NewServer(
-		grpc.UnaryInterceptor(orderUnaryServerInterceptor),
-		grpc.StreamInterceptor(orderServerStreamInterceptor))
+	s := grpc.NewServer()
 	pb.RegisterOrderManagementServer(s, &server{})
 	// Register reflection service on gRPC server.
 	reflection.Register(s)

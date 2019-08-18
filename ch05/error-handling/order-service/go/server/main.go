@@ -2,16 +2,19 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
+	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	pb "github.com/grpc-up-and-running/samples/ch05/inteceptors/order-service/go/order-service-gen"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
 	"net"
 	"strings"
-	"time"
 )
 
 const (
@@ -27,9 +30,29 @@ type server struct {
 
 // Simple RPC
 func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.StringValue, error) {
-	orderMap[orderReq.Id] = *orderReq
-	log.Println("Order : ",  orderReq.Id, " -> Added")
-	return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
+
+	if orderReq.Id == "-1" {
+		log.Printf("Order ID is invalid! -> Received Order ID %s", orderReq.Id)
+		//st := status.New(codes.ResourceExhausted, "Request limit exceeded.")
+
+		st := status.New(codes.InvalidArgument, "Invalid information received")
+
+
+		ds, err := st.WithDetails(
+			&epb.BadRequest_FieldViolation{
+				Field:"ID",
+				Description: fmt.Sprintf("Order ID received is not valid %s : %s", orderReq.Id, orderReq.Description),
+			},
+		)
+		if err != nil {
+			return nil, st.Err()
+		}
+		return nil, ds.Err()
+	} else {
+		orderMap[orderReq.Id] = *orderReq
+		log.Println("Order : ", orderReq.Id, " -> Added")
+		return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
+	}
 }
 
 // Simple RPC
@@ -45,12 +68,13 @@ func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Order
 		for _, itemStr := range order.Items {
 			if strings.Contains(itemStr, searchQuery.Value) {
 				// Send the matching orders in a stream
-				log.Print("Matching Order Found : " + key, " -> Writing Order to the stream ... ")
+				log.Print("Matching Order Found : "+key, " -> Writing Order to the stream ... ")
 				stream.Send(&order)
 				break
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -104,7 +128,7 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 			shipment.OrdersList = append(shipment.OrdersList, &ord)
 			combinedShipmentMap[destination] = shipment
 		} else {
-			comShip := pb.CombinedShipment{Id: "cmb - " + (orderMap[orderId.GetValue()].Destination), Status: "Processed!", }
+			comShip := pb.CombinedShipment{Id: "cmb - " + (orderMap[orderId.GetValue()].Destination), Status: "Processed!",}
 			ord := orderMap[orderId.GetValue()]
 			comShip.OrdersList = append(shipment.OrdersList, &ord)
 			combinedShipmentMap[destination] = comShip
@@ -113,7 +137,7 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 
 		if batchMarker == orderBatchSize {
 			for _, comb := range combinedShipmentMap {
-				log.Print("Shipping : " , comb.Id, " -> ", len(comb.OrdersList))
+				log.Print("Shipping : ", comb.Id, " -> ", len(comb.OrdersList))
 				stream.Send(&comb)
 			}
 			batchMarker = 0
@@ -124,66 +148,13 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 	}
 }
 
-
-// Server :: Unary Interceptor
-func orderUnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	// Pre-processing logic
-	// Gets info about the current RPC call by examining the args passed in
-	log.Println("======= [Server Interceptor] ", info.FullMethod)
-	log.Printf(" Pre Proc Message : %s", req)
-
-
-	// Invoking the handler to complete the normal execution of a unary RPC.
-	m, err := handler(ctx, req)
-
-	// Post processing logic
-	log.Printf(" Post Proc Message : %s", m)
-	return m, err
-}
-
-
-// wrappedStream wraps around the embedded grpc.ServerStream, and intercepts the RecvMsg and
-// SendMsg method call.
-type wrappedStream struct {
-	grpc.ServerStream
-}
-
-func (w *wrappedStream) RecvMsg(m interface{}) error {
-	log.Printf("====== [Server Stream Interceptor Wrapper] Receive a message (Type: %T) at %s", m, time.Now().Format(time.RFC3339))
-	return w.ServerStream.RecvMsg(m)
-}
-
-func (w *wrappedStream) SendMsg(m interface{}) error {
-	log.Printf("====== [Server Stream Interceptor Wrapper] Send a message (Type: %T) at %v", m, time.Now().Format(time.RFC3339))
-	return w.ServerStream.SendMsg(m)
-}
-
-func newWrappedStream(s grpc.ServerStream) grpc.ServerStream {
-	return &wrappedStream{s}
-}
-
-
-func orderServerStreamInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-	// Pre-processing
-	log.Println("====== [Server Stream Interceptor] ", info.FullMethod)
-
-	// Invoking the StreamHandler to complete the execution of RPC invocation
-	err := handler(srv, newWrappedStream(ss))
-	if err != nil {
-		log.Printf("RPC failed with error %v", err)
-	}
-	return err
-}
-
 func main() {
 	initSampleData()
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := grpc.NewServer(
-		grpc.UnaryInterceptor(orderUnaryServerInterceptor),
-		grpc.StreamInterceptor(orderServerStreamInterceptor))
+	s := grpc.NewServer()
 	pb.RegisterOrderManagementServer(s, &server{})
 	// Register reflection service on gRPC server.
 	reflection.Register(s)

@@ -28,6 +28,12 @@ type server struct {
 // Simple RPC
 func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.StringValue, error) {
 	orderMap[orderReq.Id] = *orderReq
+
+	sleepDuration  := 5
+	log.Println("Sleeping for :",  sleepDuration, "s")
+
+	time.Sleep(time.Duration(sleepDuration) * time.Second)
+
 	log.Println("Order : ",  orderReq.Id, " -> Added")
 	return &wrapper.StringValue{Value: "Order Added: " + orderReq.Id}, nil
 }
@@ -51,6 +57,7 @@ func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Order
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -124,66 +131,13 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 	}
 }
 
-
-// Server :: Unary Interceptor
-func orderUnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	// Pre-processing logic
-	// Gets info about the current RPC call by examining the args passed in
-	log.Println("======= [Server Interceptor] ", info.FullMethod)
-	log.Printf(" Pre Proc Message : %s", req)
-
-
-	// Invoking the handler to complete the normal execution of a unary RPC.
-	m, err := handler(ctx, req)
-
-	// Post processing logic
-	log.Printf(" Post Proc Message : %s", m)
-	return m, err
-}
-
-
-// wrappedStream wraps around the embedded grpc.ServerStream, and intercepts the RecvMsg and
-// SendMsg method call.
-type wrappedStream struct {
-	grpc.ServerStream
-}
-
-func (w *wrappedStream) RecvMsg(m interface{}) error {
-	log.Printf("====== [Server Stream Interceptor Wrapper] Receive a message (Type: %T) at %s", m, time.Now().Format(time.RFC3339))
-	return w.ServerStream.RecvMsg(m)
-}
-
-func (w *wrappedStream) SendMsg(m interface{}) error {
-	log.Printf("====== [Server Stream Interceptor Wrapper] Send a message (Type: %T) at %v", m, time.Now().Format(time.RFC3339))
-	return w.ServerStream.SendMsg(m)
-}
-
-func newWrappedStream(s grpc.ServerStream) grpc.ServerStream {
-	return &wrappedStream{s}
-}
-
-
-func orderServerStreamInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-	// Pre-processing
-	log.Println("====== [Server Stream Interceptor] ", info.FullMethod)
-
-	// Invoking the StreamHandler to complete the execution of RPC invocation
-	err := handler(srv, newWrappedStream(ss))
-	if err != nil {
-		log.Printf("RPC failed with error %v", err)
-	}
-	return err
-}
-
 func main() {
 	initSampleData()
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := grpc.NewServer(
-		grpc.UnaryInterceptor(orderUnaryServerInterceptor),
-		grpc.StreamInterceptor(orderServerStreamInterceptor))
+	s := grpc.NewServer()
 	pb.RegisterOrderManagementServer(s, &server{})
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
