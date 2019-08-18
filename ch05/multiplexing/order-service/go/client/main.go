@@ -25,14 +25,14 @@ func main() {
 
 
 	// *********** Calling the Order Management gRPC service **********
-	client := pb.NewOrderManagementClient(conn)
+	orderManagementClient := pb.NewOrderManagementClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// Add Order
 	order1 := pb.Order{Id: "101", Items:[]string{"iPhone XS", "Mac Book Pro"}, Destination:"San Jose, CA", Price:2300.00}
-	res, addErr := client.AddOrder(ctx, &order1)
+	res, addErr := orderManagementClient.AddOrder(ctx, &order1)
 
 	if addErr != nil {
 		got := status.Code(addErr)
@@ -44,24 +44,24 @@ func main() {
 
 
 	// *********** Calling the Greeter gRPC service  **********
-	hwc := hwpb.NewGreeterClient(conn)
+	helloClient := hwpb.NewGreeterClient(conn)
 
 	hwcCtx, hwcCancel := context.WithTimeout(context.Background(), time.Second)
 	defer hwcCancel()
-	r, err := hwc.SayHello(hwcCtx, &hwpb.HelloRequest{Name: "gRPC Up and Running!"})
+	helloResponse, err := helloClient.SayHello(hwcCtx, &hwpb.HelloRequest{Name: "gRPC Up and Running!"})
 	if err != nil {
-		log.Fatalf("client.SayHello(_) = _, %v", err)
+		log.Fatalf("orderManagementClient.SayHello(_) = _, %v", err)
 	}
-	fmt.Println("Greeting: ", r.Message)
+	fmt.Println("Greeting: ", helloResponse.Message)
 
 
 	// Get Order
-	//retrievedOrder , err := client.GetOrder(ctx, &wrapper.StringValue{Value: "106"})
+	//retrievedOrder , err := orderManagementClient.GetOrder(ctx, &wrapper.StringValue{Value: "106"})
 	//log.Print("GetOrder Response -> : ", retrievedOrder)
 
 
 	// Search Order
-	//searchStream, _ := client.SearchOrders(ctx, &wrapper.StringValue{Value: "Google"})
+	//searchStream, _ := orderManagementClient.SearchOrders(ctx, &wrapper.StringValue{Value: "Google"})
 	//for {
 	//	searchOrder, err := searchStream.Recv()
 	//	if err == io.EOF {
@@ -81,7 +81,7 @@ func main() {
 	//updOrder2 := pb.Order{Id: "103", Items:[]string{"Apple Watch S4", "Mac Book Pro", "iPad Pro"}, Destination:"San Jose, CA", Price:2800.00}
 	//updOrder3 := pb.Order{Id: "104", Items:[]string{"Google Home Mini", "Google Nest Hub", "iPad Mini"}, Destination:"Mountain View, CA", Price:2200.00}
 	//
-	//updateStream, _ := client.UpdateOrders(ctx)
+	//updateStream, _ := orderManagementClient.UpdateOrders(ctx)
 	//_ = updateStream.Send(&updOrder1)
 	//_ = updateStream.Send(&updOrder2)
 	//_ = updateStream.Send(&updOrder3)
@@ -91,7 +91,7 @@ func main() {
 	//log.Printf("Update Orders Res : ", updateRes)
 	//
 	//// Process Order
-	//streamProcOrder, _ := client.ProcessOrders(ctx)
+	//streamProcOrder, _ := orderManagementClient.ProcessOrders(ctx)
 	//_ = streamProcOrder.Send(&wrapper.StringValue{Value:"102"})
 	//_ = streamProcOrder.Send(&wrapper.StringValue{Value:"103"})
 	//_ = streamProcOrder.Send(&wrapper.StringValue{Value:"104"})
