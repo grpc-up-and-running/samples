@@ -5,10 +5,14 @@ import com.google.protobuf.StringValue;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
+import java.util.logging.Logger;
+
 /**
  * gRPC client sample for productInfo service.
  */
 public class ProductInfoClient {
+
+    private static final Logger logger = Logger.getLogger(ProductInfoClient.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
@@ -20,14 +24,14 @@ public class ProductInfoClient {
 
         StringValue productID = stub.addProduct(
                 ProductInfoOuterClass.Product.newBuilder()
-                        .setName("Sumsung S10")
+                        .setName("Samsung S10")
                         .setDescription("Samsung Galaxy S10 is the latest smart phone, launched in February 2019")
                         .setPrice(700.0f)
                         .build());
-        System.out.println(productID.getValue());
+        logger.info("Product ID: " + productID.getValue() + " added successfully.");
 
         ProductInfoOuterClass.Product product = stub.getProduct(productID);
-        System.out.println(product.toString());
+        logger.info("Product: " + product.toString());
         channel.shutdown();
     }
 }

@@ -10,8 +10,8 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
+	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/proto"
 	"google.golang.org/grpc"
 )
 
