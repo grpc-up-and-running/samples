@@ -3,7 +3,7 @@
 // Execute go get -v github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info
 // Execute go run go/server/main.go
 
-package server
+package main
 
 import (
 	"context"
