@@ -3,14 +3,19 @@
 # Multi stage build
 
 # Build stage I : Go lang and Alpine Linux is only needed to build the program
-FROM golang:1.11-alpine AS build
+#FROM golang:1.11-alpine AS build
+FROM golang AS build
 
-ENV location /go/src/github.com/grpc-up-and-running/samples/ch07/productinfo/go/server
 
+ENV location /go/src/github.com/grpc-up-and-running/samples/ch07/grpc-docker/go
 
-WORKDIR ${location}
-ADD server ${location}
-ADD ../proto ${location}
+WORKDIR ${location}/server
+
+ADD ./server ${location}/server
+ADD ./proto-gen ${location}/proto-gen
+
+#ADD main.go ${location}/server
+#ADD ../proto-gen ${location}/proto-gen
 
 
 # Download all the dependencies
