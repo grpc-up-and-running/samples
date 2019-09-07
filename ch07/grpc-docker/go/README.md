@@ -28,6 +28,7 @@ Tagging and Pushing to a Docker Registry
     docker image tag grpc-productinfo-server kasunindrasiri/grpc-productinfo-server
     docker image tag grpc-productinfo-client kasunindrasiri/grpc-productinfo-client
     docker image push kasunindrasiri/grpc-productinfo-server
+    docker image push kasunindrasiri/grpc-productinfo-client
 
 ```
 
