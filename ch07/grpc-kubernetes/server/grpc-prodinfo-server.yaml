@@ -21,6 +21,7 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 50051
+          name: grpc
 ---
 apiVersion: v1
 kind: Service
@@ -32,5 +33,6 @@ spec:
   ports:
   - port: 50051
     targetPort: 50051
+    name: grpc
   type: NodePort
 
