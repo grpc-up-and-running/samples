@@ -1,0 +1,9 @@
+ProductInfoClient
+
+
+
+google.golang.org/grpc/examples/helloworld/helloworld
+
+github.com/grpc-up-and-running/samples/ch07/grpc-docker/go/proto-gen
+
+mockgen github.com/grpc-up-and-running/samples/ch07/grpc-docker/go/proto-gen ProductInfoClient > mock_prodinfo/prodinfo_mock.go
