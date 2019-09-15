@@ -29,11 +29,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to load credentials: %v", err)
 	}
+	auth := basicAuth{
+		username: "admin",
+		password: "admin",
+	}
 	opts := []grpc.DialOption{
-		grpc.WithPerRPCCredentials(basicAuth{
-			username: "admin",
-			password: "admin",
-		}),
+		grpc.WithPerRPCCredentials(auth),
 		// transport credentials.
 		grpc.WithTransportCredentials(creds),
 	}
