@@ -8,6 +8,8 @@ package main
 import (
 	"context"
 	"errors"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	"github.com/opentracing/opentracing-go"
 	"log"
 	"net"
 
@@ -15,8 +17,6 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/grpc-up-and-running/samples/ch07/grpc-opentracing/go/proto"
 	"github.com/grpc-up-and-running/samples/ch07/grpc-opentracing/go/tracer"
-	"github.com/uber/jaeger-client-go/config"
-	"github.com/uber/jaeger-lib/metrics/prometheus"
 	"google.golang.org/grpc"
 )
 
@@ -58,10 +58,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	// Create a gRPC Server with gRPC interceptor.
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(otgrpc.OpenTracingServerInterceptor(tracer)),
-	)
-	defer closer.Close()
+	grpcServer := NewServer()
 
 	pb.RegisterProductInfoServer(grpcServer, &server{})
 
@@ -70,25 +67,26 @@ func main() {
 	}
 }
 
-func NewServer() (*grpc.Server, error) {
-	// initialize tracer
-	tracer, closer, err := tracer.NewTracer()
-	defer closer.Close()
+func NewServer() *grpc.Server {
+	// initialize jaegertracer
+	jaegertracer, closer, err := tracer.NewTracer("product_mgt")
 	if err != nil {
-		return &grpc.Server{}, err
+		return &grpc.Server{}
 	}
-	opentracing.SetGlobalTracer(tracer)
+	defer closer.Close()
+
+	opentracing.SetGlobalTracer(jaegertracer)
 
 	// initialize grpc server with chained interceptors
-	s := grpc.NewServer(
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+	server := grpc.NewServer(
+		grpc.StreamInterceptor(
 			// add opentracing stream interceptor to chain
-			grpc_opentracing.StreamServerInterceptor(grpc_opentracing.WithTracer(tracer)),
-		)),
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_opentracing.StreamServerInterceptor(grpc_opentracing.WithTracer(jaegertracer)),
+		),
+		grpc.UnaryInterceptor(
 			// add opentracing unary interceptor to chain
-			grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(tracer)),
-		)),
+			grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(jaegertracer)),
+		),
 	)
-	return s, nil
+	return server
 }
