@@ -20,7 +20,7 @@ func NewTracer(servicename string) (opentracing.Tracer, io.Closer, error) {
 		},
 		Reporter: &config.ReporterConfig{
 			LogSpans:           true,
-			LocalAgentHostPort: "127.0.0.1:5775",
+			LocalAgentHostPort: "127.0.0.1:6831",
 		},
 	}
 
