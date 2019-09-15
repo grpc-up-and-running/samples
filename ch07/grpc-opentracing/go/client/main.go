@@ -55,13 +55,14 @@ func NewClientConn(address string) (*grpc.ClientConn, error) {
 	// initialize jaegertracer
 	jaegertracer, closer, err := tracer.NewTracer("product_mgt")
 	if err != nil {
-		return grpc.Dial(address)
+		return grpc.Dial(address, grpc.WithInsecure())
 	}
 	defer closer.Close()
 
 	// initialize client with tracing interceptor using grpc client side chaining
 	return grpc.Dial(
 		address,
+		grpc.WithInsecure(),
 		grpc.WithStreamInterceptor(
 			grpcopentracing.StreamClientInterceptor(grpcopentracing.WithTracer(jaegertracer)),
 		),
