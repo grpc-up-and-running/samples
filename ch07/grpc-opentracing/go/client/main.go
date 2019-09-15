@@ -32,23 +32,26 @@ func main() {
 
 	c := pb.NewProductInfoClient(conn)
 
-	// Contact the server and print out its response.
-	name := "Sumsung S10"
-	description := "Samsung Galaxy S10 is the latest smart phone, launched in February 2019"
-	price := float32(700.0)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
-	if err != nil {
-		log.Fatalf("Could not add product: %v", err)
-	}
-	log.Printf("Product ID: %s added successfully", r.Value)
+	for {
+		// Contact the server and print out its response.
+		name := "Sumsung S10"
+		description := "Samsung Galaxy S10 is the latest smart phone, launched in February 2019"
+		price := float32(700.0)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
+		if err != nil {
+			log.Fatalf("Could not add product: %v", err)
+		}
+		log.Printf("Product ID: %s added successfully", r.Value)
 
-	product, err := c.GetProduct(ctx, &wrapper.StringValue{Value: r.Value})
-	if err != nil {
-		log.Fatalf("Could not get product: %v", err)
+		product, err := c.GetProduct(ctx, &wrapper.StringValue{Value: r.Value})
+		if err != nil {
+			log.Fatalf("Could not get product: %v", err)
+		}
+		log.Printf("Product: " + product.String())
+		time.Sleep(3 * time.Second)
 	}
-	log.Printf("Product: " + product.String())
 }
 
 func NewClientConn(address string) (*grpc.ClientConn, error) {
