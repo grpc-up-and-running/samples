@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-productinfo-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpc-productinfo-server
+  template:
+    metadata:
+      labels:
+        app: grpc-productinfo-server
+    spec:
+      containers:
+      - name: grpc-productinfo-server
+        image: kasunindrasiri/grpc-productinfo-server
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 50051
+          name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productinfo
+spec:
+  selector:
+    app: grpc-productinfo-server
+  ports:
+  - port: 50051
+    targetPort: 50051
+    name: grpc
+  type: NodePort
+

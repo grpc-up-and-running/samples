@@ -4,8 +4,8 @@ import (
 	"context"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
-	pb "github.com/grpc-up-and-running/samples/ch05/inteceptors/order-service/go/order-service-gen"
-	hwpb "google.golang.org/grpc/examples/helloworld/helloworld"
+	ordermgt_pb "github.com/grpc-up-and-running/samples/ch05/inteceptors/order-service/go/order-service-gen"
+	hello_pb "google.golang.org/grpc/examples/helloworld/helloworld"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"io"
@@ -19,23 +19,23 @@ const (
 	orderBatchSize = 3
 )
 
-var orderMap = make(map[string]pb.Order)
+var orderMap = make(map[string]ordermgt_pb.Order)
 
 
 
-type hwServer struct{}
+type helloServer struct{}
 // SayHello implements helloworld.GreeterServer
-func (s *hwServer) SayHello(ctx context.Context, in *hwpb.HelloRequest) (*hwpb.HelloReply, error) {
+func (s *helloServer) SayHello(ctx context.Context, in *hello_pb.HelloRequest) (*hello_pb.HelloReply, error) {
 	log.Printf("Greeter Service - SayHello RPC")
-	return &hwpb.HelloReply{Message: "Hello " + in.Name}, nil
+	return &hello_pb.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
-type server struct {
-	orderMap map[string]*pb.Order
+type orderMgtServer struct {
+	orderMap map[string]*ordermgt_pb.Order
 }
 
 // Simple RPC
-func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.StringValue, error) {
+func (s *orderMgtServer) AddOrder(ctx context.Context, orderReq *ordermgt_pb.Order) (*wrappers.StringValue, error) {
 	orderMap[orderReq.Id] = *orderReq
 
 	log.Printf("Order Management Service - AddOrder RPC")
@@ -45,13 +45,13 @@ func (s *server) AddOrder(ctx context.Context, orderReq *pb.Order) (*wrappers.St
 }
 
 // Simple RPC
-func (s *server) GetOrder(ctx context.Context, orderId *wrapper.StringValue) (*pb.Order, error) {
+func (s *orderMgtServer) GetOrder(ctx context.Context, orderId *wrapper.StringValue) (*ordermgt_pb.Order, error) {
 	ord := orderMap[orderId.Value]
 	return &ord, nil
 }
 
 // Server-side Streaming RPC
-func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.OrderManagement_SearchOrdersServer) error {
+func (s *orderMgtServer) SearchOrders(searchQuery *wrappers.StringValue, stream ordermgt_pb.OrderManagement_SearchOrdersServer) error {
 
 	for key, order := range orderMap {
 		for _, itemStr := range order.Items {
@@ -68,7 +68,7 @@ func (s *server) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Order
 }
 
 // Client-side Streaming RPC
-func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) error {
+func (s *orderMgtServer) UpdateOrders(stream ordermgt_pb.OrderManagement_UpdateOrdersServer) error {
 
 	ordersStr := "Updated Order IDs : "
 	for {
@@ -86,10 +86,10 @@ func (s *server) UpdateOrders(stream pb.OrderManagement_UpdateOrdersServer) erro
 }
 
 // Bi-directional Streaming RPC
-func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) error {
+func (s *orderMgtServer) ProcessOrders(stream ordermgt_pb.OrderManagement_ProcessOrdersServer) error {
 
 	batchMarker := 1
-	var combinedShipmentMap = make(map[string]pb.CombinedShipment)
+	var combinedShipmentMap = make(map[string]ordermgt_pb.CombinedShipment)
 	for {
 		orderId, err := stream.Recv()
 		log.Println("Reading Proc order ... ", orderId)
@@ -117,7 +117,7 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 			shipment.OrdersList = append(shipment.OrdersList, &ord)
 			combinedShipmentMap[destination] = shipment
 		} else {
-			comShip := pb.CombinedShipment{Id: "cmb - " + (orderMap[orderId.GetValue()].Destination), Status: "Processed!", }
+			comShip := ordermgt_pb.CombinedShipment{Id: "cmb - " + (orderMap[orderId.GetValue()].Destination), Status: "Processed!", }
 			ord := orderMap[orderId.GetValue()]
 			comShip.OrdersList = append(shipment.OrdersList, &ord)
 			combinedShipmentMap[destination] = comShip
@@ -130,7 +130,7 @@ func (s *server) ProcessOrders(stream pb.OrderManagement_ProcessOrdersServer) er
 				stream.Send(&comb)
 			}
 			batchMarker = 0
-			combinedShipmentMap = make(map[string]pb.CombinedShipment)
+			combinedShipmentMap = make(map[string]ordermgt_pb.CombinedShipment)
 		} else {
 			batchMarker++
 		}
@@ -143,25 +143,25 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := grpc.NewServer()
+	grpcServer := grpc.NewServer()
 
-	// Register Order Management service on gRPC server
-	pb.RegisterOrderManagementServer(s, &server{})
+	// Register Order Management service on gRPC orderMgtServer
+	ordermgt_pb.RegisterOrderManagementServer(grpcServer, &orderMgtServer{})
 
-	// Register Greeter Service on gRPC server
-	hwpb.RegisterGreeterServer(s, &hwServer{})
+	// Register Greeter Service on gRPC orderMgtServer
+	hello_pb.RegisterGreeterServer(grpcServer, &helloServer{})
 
-	// Register reflection service on gRPC server.
-	reflection.Register(s)
-	if err := s.Serve(lis); err != nil {
+	// Register reflection service on gRPC orderMgtServer.
+	reflection.Register(grpcServer)
+	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
 
 func initSampleData() {
-	orderMap["102"] = pb.Order{Id: "102", Items: []string{"Google Pixel 3A", "Mac Book Pro"}, Destination: "Mountain View, CA", Price: 1800.00}
-	orderMap["103"] = pb.Order{Id: "103", Items: []string{"Apple Watch S4"}, Destination: "San Jose, CA", Price: 400.00}
-	orderMap["104"] = pb.Order{Id: "104", Items: []string{"Google Home Mini", "Google Nest Hub"}, Destination: "Mountain View, CA", Price: 400.00}
-	orderMap["105"] = pb.Order{Id: "105", Items: []string{"Amazon Echo"}, Destination: "San Jose, CA", Price: 30.00}
-	orderMap["106"] = pb.Order{Id: "106", Items: []string{"Amazon Echo", "Apple iPhone XS"}, Destination: "Mountain View, CA", Price: 30.00}
+	orderMap["102"] = ordermgt_pb.Order{Id: "102", Items: []string{"Google Pixel 3A", "Mac Book Pro"}, Destination: "Mountain View, CA", Price: 1800.00}
+	orderMap["103"] = ordermgt_pb.Order{Id: "103", Items: []string{"Apple Watch S4"}, Destination: "San Jose, CA", Price: 400.00}
+	orderMap["104"] = ordermgt_pb.Order{Id: "104", Items: []string{"Google Home Mini", "Google Nest Hub"}, Destination: "Mountain View, CA", Price: 400.00}
+	orderMap["105"] = ordermgt_pb.Order{Id: "105", Items: []string{"Amazon Echo"}, Destination: "San Jose, CA", Price: 30.00}
+	orderMap["106"] = ordermgt_pb.Order{Id: "106", Items: []string{"Amazon Echo", "Apple iPhone XS"}, Destination: "Mountain View, CA", Price: 30.00}
 }

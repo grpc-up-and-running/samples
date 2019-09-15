@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grpc-productinfo-client
+spec:
+  completions: 5
+  parallelism: 10
+  template:
+    spec:
+      containers:
+      - name: grpc-productinfo-client
+        image: kasunindrasiri/grpc-productinfo-client
+      restartPolicy: Never
+  backoffLimit: 4
