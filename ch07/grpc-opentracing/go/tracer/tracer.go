@@ -14,7 +14,7 @@ func NewTracer(servicename string) (opentracing.Tracer, io.Closer, error) {
 		QueueSize:           1000,
 		BufferFlushInterval: 2000,
 		LogSpans:            true,
-		LocalAgentHostPort:  "localhost/5775",
+		LocalAgentHostPort:  "localhost:5775",
 	}
 	samplerConfig := config.SamplerConfig{
 		Type:  "const",

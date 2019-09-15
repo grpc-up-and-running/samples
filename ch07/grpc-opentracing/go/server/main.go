@@ -71,7 +71,8 @@ func NewServer() *grpc.Server {
 	// initialize jaegertracer
 	jaegertracer, closer, err := tracer.NewTracer("product_mgt")
 	if err != nil {
-		return &grpc.Server{}
+		log.Fatalln(err)
+		return grpc.NewServer()
 	}
 	defer closer.Close()
 
