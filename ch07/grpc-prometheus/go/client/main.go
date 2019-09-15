@@ -1,5 +1,5 @@
 // Go to ${grpc-up-and-running}/samples/ch02/productinfo
-// Optional: Execute protoc --go_out=plugins=grpc:golang/product_info product_info.proto
+// Optional: Execute protoc -I proto proto/product_info.proto --go_out=plugins=grpc:go/product_info
 // Execute go get -v github.com/grpc-up-and-running/samples/ch02/productinfo/golang/product_info
 // Execute go run go/client/main.go
 
@@ -7,14 +7,11 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
-	"google.golang.org/grpc/credentials"
 	"log"
-	"path/filepath"
 	"time"
 
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
-	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info"
+	pb "github.com/grpc-up-and-running/samples/ch07/grpc-prometheus/go/proto"
 	"google.golang.org/grpc"
 )
 
@@ -23,24 +20,8 @@ const (
 )
 
 func main() {
-
-	creds, err := credentials.NewClientTLSFromFile(filepath.Join("ch06", "secure-channel", "certs", "server.crt"),
-		"localhost")
-	if err != nil {
-		log.Fatalf("failed to load credentials: %v", err)
-	}
-	auth := basicAuth{
-		username: "admin",
-		password: "admin",
-	}
-	opts := []grpc.DialOption{
-		grpc.WithPerRPCCredentials(auth),
-		// transport credentials.
-		grpc.WithTransportCredentials(creds),
-	}
-
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(address, opts...)
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -64,21 +45,4 @@ func main() {
 		log.Fatalf("Could not get product: %v", err)
 	}
 	log.Printf("Product: ", product.String())
-}
-
-type basicAuth struct {
-	username string
-	password string
-}
-
-func (b basicAuth) GetRequestMetadata(ctx context.Context, in ...string) (map[string]string, error) {
-	auth := b.username + ":" + b.password
-	enc := base64.StdEncoding.EncodeToString([]byte(auth))
-	return map[string]string{
-		"authorization": "Basic " + enc,
-	}, nil
-}
-
-func (b basicAuth) RequireTransportSecurity() bool {
-	return true
 }
