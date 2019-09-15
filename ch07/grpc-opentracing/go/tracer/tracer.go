@@ -1,18 +1,30 @@
 package tracer
 
 import (
+	"github.com/uber/jaeger-client-go"
+	"github.com/uber/jaeger-lib/metrics"
 	"io"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go/config"
+	"github.com/uber/jaeger-client-go/log"
 	"github.com/uber/jaeger-lib/metrics/prometheus"
 )
 
 func NewTracer(servicename string) (opentracing.Tracer, io.Closer, error) {
-	metricsFactory := prometheus.New()
 	// load config from environment variables
-	cfg, _ := config.FromEnv()
-	cfg.ServiceName = servicename
+	cfg := config.Configuration{
+		ServiceName: servicename,
+		Sampler: &config.SamplerConfig{
+			Type:  jaeger.SamplerTypeConst,
+			Param: 1,
+		},
+		Reporter: &config.ReporterConfig{
+			LogSpans:           true,
+			LocalAgentHostPort: "127.0.0.1:5775",
+		},
+	}
+
 	//reporterConfig := config.ReporterConfig{
 	//	QueueSize:           1000,
 	//	BufferFlushInterval: 2000,
@@ -23,7 +35,10 @@ func NewTracer(servicename string) (opentracing.Tracer, io.Closer, error) {
 	//	Type:  "const",
 	//	Param: 1.0,
 	//}
+	jLogger := log.StdLogger
+	metricsFactory := prometheus.New()
 	return cfg.NewTracer(
+		config.Logger(jLogger),
 		config.Metrics(metricsFactory),
 	)
 }
