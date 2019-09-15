@@ -13,7 +13,10 @@ import (
 
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/uuid"
-	pb "github.com/grpc-up-and-running/samples/ch07/grpc-prometheus/go/proto"
+	pb "github.com/grpc-up-and-running/samples/ch07/grpc-opentracing/go/proto"
+	"github.com/grpc-up-and-running/samples/ch07/grpc-opentracing/go/tracer"
+	"github.com/uber/jaeger-client-go/config"
+	"github.com/uber/jaeger-lib/metrics/prometheus"
 	"google.golang.org/grpc"
 )
 
@@ -49,10 +52,6 @@ func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.P
 	return nil, errors.New("Product does not exist for the ID" + in.Value)
 }
 
-var (
-    tracer opentracing.Tracer =
-)
-
 func main() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
@@ -62,10 +61,34 @@ func main() {
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(otgrpc.OpenTracingServerInterceptor(tracer)),
 	)
+	defer closer.Close()
 
 	pb.RegisterProductInfoServer(grpcServer, &server{})
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+}
+
+func NewServer() (*grpc.Server, error) {
+	// initialize tracer
+	tracer, closer, err := tracer.NewTracer()
+	defer closer.Close()
+	if err != nil {
+		return &grpc.Server{}, err
+	}
+	opentracing.SetGlobalTracer(tracer)
+
+	// initialize grpc server with chained interceptors
+	s := grpc.NewServer(
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			// add opentracing stream interceptor to chain
+			grpc_opentracing.StreamServerInterceptor(grpc_opentracing.WithTracer(tracer)),
+		)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			// add opentracing unary interceptor to chain
+			grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(tracer)),
+		)),
+	)
+	return s, nil
 }
