@@ -8,18 +8,13 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"net"
-	"net/http"
 
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/uuid"
 	pb "github.com/grpc-up-and-running/samples/ch07/grpc-prometheus/go/proto"
 	"google.golang.org/grpc"
-	"github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
@@ -33,7 +28,6 @@ type server struct {
 
 // AddProduct implements ecommerce.AddProduct
 func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.StringValue, error) {
-	customizedCounterMetric.WithLabelValues(in.Name).Inc()
 	out, err := uuid.NewUUID()
 	if err != nil {
 		log.Fatal(err)
@@ -56,48 +50,20 @@ func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.P
 }
 
 var (
-	// Create a metrics registry.
-	reg = prometheus.NewRegistry()
-
-	// Create some standard server metrics.
-	grpcMetrics = grpc_prometheus.NewServerMetrics()
-
-    customizedCounterMetric = prometheus.NewCounterVec(prometheus.CounterOpts{
-        Name: "product_mgt_server_handle_count",
-        Help: "Total number of RPCs handled on the server.",
-    }, []string{"name"})
+    tracer opentracing.Tracer =
 )
-
-func init() {
-	// Register standard server metrics and customized metrics to registry.
-	reg.MustRegister(grpcMetrics, customizedCounterMetric)
-}
 
 func main() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-
-	// Create a HTTP server for prometheus.
-	httpServer := &http.Server{Handler: promhttp.HandlerFor(reg, promhttp.HandlerOpts{}), Addr: fmt.Sprintf("0.0.0.0:%d", 9092)}
-
 	// Create a gRPC Server with gRPC interceptor.
 	grpcServer := grpc.NewServer(
-		grpc.StreamInterceptor(grpcMetrics.StreamServerInterceptor()),
-		grpc.UnaryInterceptor(grpcMetrics.UnaryServerInterceptor()),
+		grpc.UnaryInterceptor(otgrpc.OpenTracingServerInterceptor(tracer)),
 	)
 
 	pb.RegisterProductInfoServer(grpcServer, &server{})
-    // Initialize all metrics.
-    grpcMetrics.InitializeMetrics(grpcServer)
-
-	// Start your http server for prometheus.
-	go func() {
-		if err := httpServer.ListenAndServe(); err != nil {
-			log.Fatal("Unable to start a http server.")
-		}
-	}()
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

@@ -12,12 +12,9 @@ import (
 	"time"
 	"net/http"
 
-	"github.com/grpc-ecosystem/go-grpc-prometheus"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
-	pb "github.com/grpc-up-and-running/samples/ch07/grpc-prometheus/go/proto"
+	pb "github.com/grpc-up-and-running/samples/ch07/grpc-opentracing/go/proto"
 	"google.golang.org/grpc"
-	"github.com/prometheus/client_golang/prometheus"
-    "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
