@@ -80,10 +80,6 @@ func NewServer() *grpc.Server {
 
 	// initialize grpc server with chained interceptors
 	server := grpc.NewServer(
-		grpc.StreamInterceptor(
-			// add opentracing stream interceptor to chain
-			grpc_opentracing.StreamServerInterceptor(grpc_opentracing.WithTracer(jaegertracer)),
-		),
 		grpc.UnaryInterceptor(
 			// add opentracing unary interceptor to chain
 			grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(jaegertracer)),
