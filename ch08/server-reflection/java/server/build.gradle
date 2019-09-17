@@ -1,0 +1,71 @@
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+
+repositories {
+    mavenCentral()
+}
+
+// updating the version in our release process.
+def grpcVersion = '1.8.0' // CURRENT_GRPC_VERSION
+
+dependencies {
+    compile "io.grpc:grpc-netty:${grpcVersion}"
+    compile "io.grpc:grpc-protobuf:${grpcVersion}"
+    compile "io.grpc:grpc-stub:${grpcVersion}"
+    compile "io.grpc:grpc-services:${grpcVersion}"
+    compile 'com.google.protobuf:protobuf-java:3.4.0'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        // ASSUMES GRADLE 2.12 OR HIGHER. Use plugin version 0.7.5 with earlier
+        // gradle versions
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.4'
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.4.0'
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "ecommerce.ProductInfoServer"
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+// Generate IntelliJ IDEA's .idea & .iml project files
+apply plugin: 'idea'
+
+// Provide convenience executables for trying out the examples.
+apply plugin: 'application'
+
+startScripts.enabled = false

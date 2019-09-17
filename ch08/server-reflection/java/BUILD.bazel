@@ -1,0 +1,46 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@build_stack_rules_proto//java:java_grpc_library.bzl", "java_grpc_library")
+
+java_grpc_library(
+    name = "java_product_info_proto",
+    has_services = True,
+    deps = [
+        "//ch02/productinfo/proto:productinfo_grpc",
+        "@com_google_protobuf//:wrappers_proto",
+    ],
+)
+
+java_library(
+    name = "serverlib",
+    srcs = [
+        "server/src/main/java/ecommerce/ProductInfoServer.java",
+        "server/src/main/java/ecommerce/ProductInfoImpl.java",
+    ],
+    deps = [
+        ":java_product_info_proto",
+        "@com_google_protobuf//:protobuf_java_util",
+    ],
+)
+
+java_binary(
+    name = "server",
+    main_class = "ecommerce.ProductInfoServer",
+    runtime_deps = [
+        ":serverlib",
+        "@io_grpc_grpc_java//netty:netty",
+    ],
+)
+
+java_binary(
+    name = "client",
+    srcs = [
+        "client/src/main/java/ecommerce/ProductInfoClient.java",
+    ],
+    main_class = "ecommerce.ProductInfoClient",
+    deps = [
+        ":java_product_info_proto",
+        ":serverlib",
+        "@io_grpc_grpc_java//netty:netty",
+    ],
+)

@@ -1,0 +1,16 @@
+package(default_visibility = ["//visibility:public"])
+
+proto_library(
+    name = "productinfo_grpc",
+    srcs = [
+        "product_info.proto",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        "@com_google_protobuf//:wrappers_proto",
+    ],
+)
+
+
