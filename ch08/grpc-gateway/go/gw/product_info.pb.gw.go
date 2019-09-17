@@ -10,7 +10,6 @@ package proto
 
 import (
 	"context"
-	"github.com/daneshk/samples/ch08/grpc-gateway/go/pb"
 	"io"
 	"net/http"
 
