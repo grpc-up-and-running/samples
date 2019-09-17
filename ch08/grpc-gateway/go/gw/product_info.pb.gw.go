@@ -17,7 +17,7 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
-	"github.com/grpc-up-and-running/samples/ch08/grpc-gateway/go/pb"
+	pb "github.com/grpc-up-and-running/samples/ch08/grpc-gateway/go/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
