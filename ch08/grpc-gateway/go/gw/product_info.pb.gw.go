@@ -42,7 +42,7 @@ func request_ProductInfo_AddProduct_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := pb.AddProduct(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.AddProduct(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
@@ -59,7 +59,7 @@ func local_request_ProductInfo_AddProduct_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := pb.AddProduct(ctx, &protoReq)
+	msg, err := server.AddProduct(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -86,7 +86,7 @@ func request_ProductInfo_GetProduct_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
 	}
 
-	msg, err := pb.GetProduct(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetProduct(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
@@ -113,7 +113,7 @@ func local_request_ProductInfo_GetProduct_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
 	}
 
-	msg, err := pb.GetProduct(ctx, &protoReq)
+	msg, err := server.GetProduct(ctx, &protoReq)
 	return msg, metadata, err
 
 }
