@@ -13,7 +13,7 @@ import (
 
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/uuid"
-	pb "github.com/grpc-up-and-running/samples/ch08/grpc-gateway/go/proto"
+	pb "github.com/grpc-up-and-running/samples/ch08/grpc-gateway/go/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

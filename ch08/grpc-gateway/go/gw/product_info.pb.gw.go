@@ -10,6 +10,7 @@ package proto
 
 import (
 	"context"
+	"github.com/daneshk/samples/ch08/grpc-gateway/go/pb"
 	"io"
 	"net/http"
 
@@ -29,8 +30,8 @@ var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
-func request_ProductInfo_AddProduct_0(ctx context.Context, marshaler runtime.Marshaler, client ProductInfoClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Product
+func request_ProductInfo_AddProduct_0(ctx context.Context, marshaler runtime.Marshaler, client pb.ProductInfoClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq pb.Product
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -46,8 +47,8 @@ func request_ProductInfo_AddProduct_0(ctx context.Context, marshaler runtime.Mar
 
 }
 
-func local_request_ProductInfo_AddProduct_0(ctx context.Context, marshaler runtime.Marshaler, server ProductInfoServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Product
+func local_request_ProductInfo_AddProduct_0(ctx context.Context, marshaler runtime.Marshaler, server pb.ProductInfoServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq pb.Product
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -63,7 +64,7 @@ func local_request_ProductInfo_AddProduct_0(ctx context.Context, marshaler runti
 
 }
 
-func request_ProductInfo_GetProduct_0(ctx context.Context, marshaler runtime.Marshaler, client ProductInfoClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ProductInfo_GetProduct_0(ctx context.Context, marshaler runtime.Marshaler, client pb.ProductInfoClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.StringValue
 	var metadata runtime.ServerMetadata
 
@@ -90,7 +91,7 @@ func request_ProductInfo_GetProduct_0(ctx context.Context, marshaler runtime.Mar
 
 }
 
-func local_request_ProductInfo_GetProduct_0(ctx context.Context, marshaler runtime.Marshaler, server ProductInfoServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ProductInfo_GetProduct_0(ctx context.Context, marshaler runtime.Marshaler, server pb.ProductInfoServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.StringValue
 	var metadata runtime.ServerMetadata
 
@@ -120,7 +121,7 @@ func local_request_ProductInfo_GetProduct_0(ctx context.Context, marshaler runti
 // RegisterProductInfoHandlerServer registers the http handlers for service ProductInfo to "mux".
 // UnaryRPC     :call ProductInfoServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-func RegisterProductInfoHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ProductInfoServer) error {
+func RegisterProductInfoHandlerServer(ctx context.Context, mux *runtime.ServeMux, server pb.ProductInfoServer) error {
 
 	mux.Handle("POST", pattern_ProductInfo_AddProduct_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -193,7 +194,7 @@ func RegisterProductInfoHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 // RegisterProductInfoHandler registers the http handlers for service ProductInfo to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterProductInfoHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterProductInfoHandlerClient(ctx, mux, NewProductInfoClient(conn))
+	return RegisterProductInfoHandlerClient(ctx, mux, pb.NewProductInfoClient(conn))
 }
 
 // RegisterProductInfoHandlerClient registers the http handlers for service ProductInfo
@@ -201,7 +202,7 @@ func RegisterProductInfoHandler(ctx context.Context, mux *runtime.ServeMux, conn
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ProductInfoClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ProductInfoClient" to call the correct interceptors.
-func RegisterProductInfoHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ProductInfoClient) error {
+func RegisterProductInfoHandlerClient(ctx context.Context, mux *runtime.ServeMux, client pb.ProductInfoClient) error {
 
 	mux.Handle("POST", pattern_ProductInfo_AddProduct_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
