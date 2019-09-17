@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "google/api/annotations.proto";
+
+package ecommerce;
+
+service ProductInfo {
+    rpc addProduct(Product) returns (google.protobuf.StringValue) {
+        option (google.api.http) = {
+            post: "/v1/product"
+            body: "*"
+        };
+    }
+    rpc getProduct(google.protobuf.StringValue) returns (Product) {
+         option (google.api.http) = {
+             get:"/v1/product/{value}"
+         };
+    }
+}
+
+message Product {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    float price = 4;
+}
