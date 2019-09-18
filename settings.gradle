@@ -1,6 +1,8 @@
 rootProject.name = 'samples'
 include(':ch02:productinfo:java:server')
 include(':ch02:productinfo:java:client')
+include(':ch08:server-reflection:java:server')
 
 project(':ch02:productinfo:java:server').projectDir = file('ch02/productinfo/java/server')
 project(':ch02:productinfo:java:client').projectDir = file('ch02/productinfo/java/client')
+project(':ch08:server-reflection:java:server').projectDir = file('ch08/server-reflection/java/server')
