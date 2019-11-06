@@ -1,7 +1,5 @@
 package ecommerce;
 
-import com.google.protobuf.StringValue;
-
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -16,16 +14,17 @@ public class ProductInfoClient {
 
     public static void main(String[] args) throws InterruptedException {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
-                .usePlaintext(true)
+                .usePlaintext()
                 .build();
 
         ProductInfoGrpc.ProductInfoBlockingStub stub =
                 ProductInfoGrpc.newBlockingStub(channel);
 
-        StringValue productID = stub.addProduct(
+        ProductInfoOuterClass.ProductID productID = stub.addProduct(
                 ProductInfoOuterClass.Product.newBuilder()
                         .setName("Samsung S10")
-                        .setDescription("Samsung Galaxy S10 is the latest smart phone, launched in February 2019")
+                        .setDescription("Samsung Galaxy S10 is the latest smart phone, " +
+                                "launched in February 2019")
                         .setPrice(700.0f)
                         .build());
         logger.info("Product ID: " + productID.getValue() + " added successfully.");

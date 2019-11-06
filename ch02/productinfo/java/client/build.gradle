@@ -6,13 +6,13 @@ repositories {
 }
 
 // updating the version in our release process.
-def grpcVersion = '1.8.0' // CURRENT_GRPC_VERSION
+def grpcVersion = '1.24.1' // CURRENT_GRPC_VERSION
 
 dependencies {
     compile "io.grpc:grpc-netty:${grpcVersion}"
     compile "io.grpc:grpc-protobuf:${grpcVersion}"
     compile "io.grpc:grpc-stub:${grpcVersion}"
-    compile 'com.google.protobuf:protobuf-java:3.4.0'
+    compile 'com.google.protobuf:protobuf-java:3.9.0'
 }
 
 buildscript {
@@ -28,7 +28,7 @@ buildscript {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.4.0'
+        artifact = 'com.google.protobuf:protoc:3.9.0'
     }
     plugins {
         grpc {

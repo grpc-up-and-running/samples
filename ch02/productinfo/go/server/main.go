@@ -7,15 +7,14 @@ package main
 
 import (
 	"context"
-	"errors"
 	"log"
 	"net"
 
-	wrapper "github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/google/uuid"
-	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/proto"
+	"github.com/gofrs/uuid"
+	pb "productinfo/server/proto"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -28,37 +27,38 @@ type server struct {
 }
 
 // AddProduct implements ecommerce.AddProduct
-func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.StringValue, error) {
-	out, err := uuid.NewUUID()
+func (s *server) AddProduct(ctx context.Context,
+							in *pb.Product) (*pb.ProductID, error) {
+	out, err := uuid.NewV4()
 	if err != nil {
 		log.Fatal(err)
+		return nil, status.Errorf(codes.Internal, "Error while generating Product ID", err)
 	}
 	in.Id = out.String()
 	if s.productMap == nil {
 		s.productMap = make(map[string]*pb.Product)
 	}
 	s.productMap[in.Id] = in
-	return &wrapper.StringValue{Value: in.Id}, nil
+	return &pb.ProductID{Value: in.Id}, status.New(codes.OK, "").Err()
 }
 
 // GetProduct implements ecommerce.GetProduct
-func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.Product, error) {
+func (s *server) GetProduct(ctx context.Context, in *pb.ProductID) (*pb.Product, error) {
 	value, exists := s.productMap[in.Value]
 	if exists {
-		return value, nil
+		return value, status.New(codes.OK, "").Err()
 	}
-	return nil, errors.New("Product does not exist for the ID" + in.Value)
+	return nil, status.Errorf(codes.NotFound, "Product does not exist.", in.Value)
 }
 
 func main() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
+		return
 	}
 	s := grpc.NewServer()
 	pb.RegisterProductInfoServer(s, &server{})
-	// Register reflection service on gRPC server.
-	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

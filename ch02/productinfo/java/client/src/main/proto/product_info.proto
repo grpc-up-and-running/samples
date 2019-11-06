@@ -1,12 +1,10 @@
 syntax = "proto3";
 
-import "google/protobuf/wrappers.proto";
-
 package ecommerce;
 
 service ProductInfo {
-    rpc addProduct(Product) returns (google.protobuf.StringValue);
-    rpc getProduct(google.protobuf.StringValue) returns (Product);
+    rpc addProduct(Product) returns (ProductID);
+    rpc getProduct(ProductID) returns (Product);
 }
 
 message Product {
@@ -14,4 +12,8 @@ message Product {
     string name = 2;
     string description = 3;
     float price = 4;
+}
+
+message ProductID {
+    string value = 1;
 }

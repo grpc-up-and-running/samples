@@ -10,8 +10,7 @@ import (
 	"log"
 	"time"
 
-	wrapper "github.com/golang/protobuf/ptypes/wrappers"
-	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/proto"
+	pb "productinfo/client/proto"
 	"google.golang.org/grpc"
 )
 
@@ -37,10 +36,11 @@ func main() {
 	r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
 	if err != nil {
 		log.Fatalf("Could not add product: %v", err)
+		return
 	}
 	log.Printf("Product ID: %s added successfully", r.Value)
 
-	product, err := c.GetProduct(ctx, &wrapper.StringValue{Value: r.Value})
+	product, err := c.GetProduct(ctx, &pb.ProductID{Value: r.Value})
 	if err != nil {
 		log.Fatalf("Could not get product: %v", err)
 	}
