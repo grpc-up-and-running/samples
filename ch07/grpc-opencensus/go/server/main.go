@@ -1,5 +1,5 @@
 // Go to ${grpc-up-and-running}/samples/ch02/productinfo
-// Optional: Execute protoc --go_out=plugins=grpc:golang/product_info product_info.proto
+// Optional: Execute protoc -I proto proto/product_info.proto --go_out=plugins=grpc:go/product_info
 // Execute go get -v github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info
 // Execute go run go/server/main.go
 
@@ -7,22 +7,23 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
-	wrapper "github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/google/uuid"
-	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/proto"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"log"
 	"net"
-	"path/filepath"
+	"net/http"
+
+	wrapper "github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/google/uuid"
+	pb "github.com/grpc-up-and-running/samples/ch07/grpc-prometheus/go/proto"
+	"google.golang.org/grpc"
+	"go.opencensus.io/plugin/ocgrpc"
+	"go.opencensus.io/stats/view"
+	"go.opencensus.io/zpages"
+	"go.opencensus.io/examples/exporter"
 )
 
 const (
 	port = ":50051"
-	crtFile = filepath.Join("ch06", "secure-channel", "certs", "server.crt")
-	keyFile = filepath.Join("ch06", "secure-channel", "certs", "server.key")
 )
 
 // server is used to implement ecommerce/product_info.
@@ -54,26 +55,32 @@ func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.P
 }
 
 func main() {
-	cert, err := tls.LoadX509KeyPair(crtFile, keyFile)
-	if err != nil {
-		log.Fatalf("failed to load key pair: %s", err)
-	}
-	opts := []grpc.ServerOption{
-		// Enable TLS for all incoming connections.
-		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+	// Start z-Pages server.
+	go func() {
+		mux := http.NewServeMux()
+		zpages.Handle(mux, "/debug")
+		log.Fatal(http.ListenAndServe("127.0.0.1:8081", mux))
+	}()
+
+    // Register stats and trace exporters to export
+    // the collected data.
+    view.RegisterExporter(&exporter.PrintExporter{})
+
+	// Register the views to collect server request count.
+	if err := view.Register(ocgrpc.DefaultServerViews...); err != nil {
+		log.Fatal(err)
 	}
 
-	s := grpc.NewServer(opts...)
-	pb.RegisterProductInfoServer(s, &server{})
-	// Register reflection service on gRPC server.
-	//reflection.Register(s)
+	// Create a gRPC Server with stats handler.
+	grpcServer := grpc.NewServer(grpc.StatsHandler(&ocgrpc.ServerHandler{}))
+	pb.RegisterProductInfoServer(grpcServer, &server{})
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	if err := s.Serve(lis); err != nil {
+	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }

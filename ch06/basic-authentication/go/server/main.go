@@ -24,16 +24,13 @@ import (
 	"strings"
 )
 
-const (
-	port = ":50051"
-)
-
 // server is used to implement ecommerce/product_info.
 type server struct {
 	productMap map[string]*pb.Product
 }
 
 var (
+	port = ":50051"
 	errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata")
 	errInvalidToken    = status.Errorf(codes.Unauthenticated, "invalid credentials")
 )

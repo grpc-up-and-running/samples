@@ -11,7 +11,7 @@ import (
 	"net"
 
 	"github.com/gofrs/uuid"
-	pb "productinfo/server/proto"
+	pb "productinfo/server/ecommerce"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -56,7 +56,6 @@ func main() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
-		return
 	}
 	s := grpc.NewServer()
 	pb.RegisterProductInfoServer(s, &server{})

@@ -10,7 +10,7 @@ import (
 	"log"
 	"time"
 
-	pb "productinfo/client/proto"
+	pb "productinfo/client/ecommerce"
 	"google.golang.org/grpc"
 )
 
@@ -36,7 +36,6 @@ func main() {
 	r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
 	if err != nil {
 		log.Fatalf("Could not add product: %v", err)
-		return
 	}
 	log.Printf("Product ID: %s added successfully", r.Value)
 

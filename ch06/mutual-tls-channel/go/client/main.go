@@ -20,43 +20,37 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
-	address = "localhost:50051"
-	serverName = "localhost"
-)
-
 var (
-	crt = filepath.Join("ch06", "mutual-tls-channel", "certs", "client.crt")
-	key = filepath.Join("ch06", "mutual-tls-channel", "certs", "client.key")
-	ca = filepath.Join("ch06", "mutual-tls-channel", "certs", "ca.crt")
+	address = "localhost:50051"
+	hostname = "localhost"
+	crtFile = filepath.Join("ch06", "mutual-tls-channel", "certs", "client.crt")
+	keyFile = filepath.Join("ch06", "mutual-tls-channel", "certs", "client.key")
+	caFile = filepath.Join("ch06", "mutual-tls-channel", "certs", "ca.crt")
 )
 
 func main() {
 	// Load the client certificates from disk
-	certificate, err := tls.LoadX509KeyPair(crt, key)
+	certificate, err := tls.LoadX509KeyPair(crtFile, keyFile)
 	if err != nil {
 		log.Fatalf("could not load client key pair: %s", err)
-		return
 	}
 
 	// Create a certificate pool from the certificate authority
 	certPool := x509.NewCertPool()
-	ca, err := ioutil.ReadFile(ca)
+	ca, err := ioutil.ReadFile(caFile)
 	if err != nil {
 		log.Fatalf("could not read ca certificate: %s", err)
-		return
 	}
 
 	// Append the certificates from the CA
 	if ok := certPool.AppendCertsFromPEM(ca); !ok {
 		log.Fatalf("failed to append ca certs")
-		return
 	}
 
 	opts := []grpc.DialOption{
 		// transport credentials.
 		grpc.WithTransportCredentials( credentials.NewTLS(&tls.Config{
-			ServerName:   serverName, // NOTE: this is required!
+			ServerName:   hostname, // NOTE: this is required!
 			Certificates: []tls.Certificate{certificate},
 			RootCAs:      certPool,
 		})),
@@ -66,7 +60,6 @@ func main() {
 	conn, err := grpc.Dial(address, opts...)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
-		return
 	}
 	defer conn.Close()
 	c := pb.NewProductInfoClient(conn)
