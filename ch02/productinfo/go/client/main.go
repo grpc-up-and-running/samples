@@ -28,9 +28,9 @@ func main() {
 	c := pb.NewProductInfoClient(conn)
 
 	// Contact the server and print out its response.
-	name := "Sumsung S10"
-	description := "Samsung Galaxy S10 is the latest smart phone, launched in February 2019"
-	price := float32(700.0)
+	name := "Apple iPhone 11"
+	description := "Meet Apple iPhone 11. All-new dual-camera system with Ultra Wide and Night mode."
+	price := float32(699.00)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
@@ -43,5 +43,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not get product: %v", err)
 	}
-	log.Printf("Product: ", product.String())
+	log.Printf("Product: %v", product.String())
 }

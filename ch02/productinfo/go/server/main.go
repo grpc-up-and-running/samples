@@ -38,14 +38,16 @@ func (s *server) AddProduct(ctx context.Context,
 		s.productMap = make(map[string]*pb.Product)
 	}
 	s.productMap[in.Id] = in
+	log.Printf("Product %v : %v - Added.", in.Id, in.Name)
 	return &pb.ProductID{Value: in.Id}, status.New(codes.OK, "").Err()
 }
 
 // GetProduct implements ecommerce.GetProduct
 func (s *server) GetProduct(ctx context.Context, in *pb.ProductID) (*pb.Product, error) {
-	value, exists := s.productMap[in.Value]
-	if exists {
-		return value, status.New(codes.OK, "").Err()
+	product, exists := s.productMap[in.Value]
+	if exists && product != nil {
+		log.Printf("Product %v : %v - Retrieved.", product.Id, product.Name)
+		return product, status.New(codes.OK, "").Err()
 	}
 	return nil, status.Errorf(codes.NotFound, "Product does not exist.", in.Value)
 }

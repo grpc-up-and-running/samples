@@ -1,5 +1,7 @@
 # Chapter 2: Developing Product Info Service and Client 
 
+
+
 - Online retail scenario has a `` ProductInfo`` micro service which is responsible for managing the products and their
  information. The consumer of that service can add, remove, retrieve products via that service. 
 
@@ -7,6 +9,29 @@
 - One of the consumer of that service is written using ``Java``. 
 - This use case shows you can implement both ``ProductInfo`` service and its consumer.
 
+-------------
+
+# Chapter 2: Developing Product Info Service and Client 
+(Introduction to the use case) 
+
+## Service Definition and Code Generation 
+
+
+## Running Service
+
+### Go Implementation 
+
+### Java Implementation  
+
+## Running Client  
+
+### Go Implementation 
+
+### Java Implementation 
+
+
+
+-------------------------
 ## Go Server and Client
 
 ### Go Server
@@ -39,7 +64,7 @@ To build gRPC Java server with Bazel, use the following command from sample dire
 $ bazel build //ch02/productinfo/java:server
 ```
 
-To spin up the Java microservice, run the following command from root directory.
+To spin up the Java microservices, run the following command from root directory.
 ``` 
 $ bazel-bin/ch02/productinfo/java/server
 ```
