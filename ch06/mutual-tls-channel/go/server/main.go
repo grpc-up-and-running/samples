@@ -21,10 +21,6 @@ import (
 	"path/filepath"
 )
 
-const (
-	port = ":50051"
-)
-
 // server is used to implement ecommerce/product_info.
 type server struct {
 	productMap map[string]*pb.Product
@@ -54,29 +50,28 @@ func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.P
 }
 
 var (
-	crt = filepath.Join("ch06", "mutual-tls-channel", "certs", "server.crt")
-	key = filepath.Join("ch06", "mutual-tls-channel", "certs", "server.key")
-	ca = filepath.Join("ch06", "mutual-tls-channel", "certs", "ca.crt")
+	port = ":50051"
+    crtFile = filepath.Join("ch06", "mutual-tls-channel", "certs", "server.crt")
+    keyFile = filepath.Join("ch06", "mutual-tls-channel", "certs", "server.key")
+    caFile = filepath.Join("ch06", "mutual-tls-channel", "certs", "ca.crt")
 )
+
 func main() {
-	certificate, err := tls.LoadX509KeyPair(crt, key)
+	certificate, err := tls.LoadX509KeyPair(crtFile, keyFile)
 	if err != nil {
 		log.Fatalf("failed to load key pair: %s", err)
-		return
 	}
 
 	// Create a certificate pool from the certificate authority
 	certPool := x509.NewCertPool()
-	ca, err := ioutil.ReadFile(ca)
+	ca, err := ioutil.ReadFile(caFile)
 	if err != nil {
 		log.Fatalf("could not read ca certificate: %s", err)
-		return
 	}
 
 	// Append the client certificates from the CA
 	if ok := certPool.AppendCertsFromPEM(ca); !ok {
 		log.Fatalf("failed to append client certs")
-		return
 	}
 
 	opts := []grpc.ServerOption{
@@ -98,11 +93,9 @@ func main() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
-		return
 	}
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
-		return
 	}
 }

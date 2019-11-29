@@ -19,11 +19,12 @@ import (
 
 const (
 	address = "localhost:50051"
+	hostname = "localhost"
+	crtFile = filepath.Join("ch06", "secure-channel", "certs", "server.crt")
 )
 
 func main() {
-	creds, err := credentials.NewClientTLSFromFile(filepath.Join("ch06", "secure-channel", "certs", "server.crt"),
-		"localhost")
+	creds, err := credentials.NewClientTLSFromFile(crtFile, hostname)
 	if err != nil {
 		log.Fatalf("failed to load credentials: %v", err)
 	}

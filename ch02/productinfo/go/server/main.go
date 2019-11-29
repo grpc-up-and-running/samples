@@ -11,7 +11,7 @@ import (
 	"net"
 
 	"github.com/gofrs/uuid"
-	pb "productinfo/server/proto"
+	pb "productinfo/server/ecommerce"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,7 +31,6 @@ func (s *server) AddProduct(ctx context.Context,
 							in *pb.Product) (*pb.ProductID, error) {
 	out, err := uuid.NewV4()
 	if err != nil {
-		log.Fatal(err)
 		return nil, status.Errorf(codes.Internal, "Error while generating Product ID", err)
 	}
 	in.Id = out.String()
@@ -55,7 +54,6 @@ func main() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
-		return
 	}
 	s := grpc.NewServer()
 	pb.RegisterProductInfoServer(s, &server{})

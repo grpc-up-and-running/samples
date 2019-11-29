@@ -23,16 +23,15 @@ import (
 	"strings"
 )
 
-const (
-	port = ":50051"
-)
-
 // server is used to implement ecommerce/product_info.
 type server struct {
 	productMap map[string]*pb.Product
 }
 
 var (
+	port = ":50051"
+	crtFile = filepath.Join("ch06", "secure-channel", "certs", "server.crt")
+	keyFile = filepath.Join("ch06", "secure-channel", "certs", "server.key")
 	errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata")
 	errInvalidToken    = status.Errorf(codes.Unauthenticated, "invalid token")
 )
@@ -61,8 +60,7 @@ func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.P
 }
 
 func main() {
-	cert, err := tls.LoadX509KeyPair(filepath.Join("ch06", "secure-channel", "certs", "server.crt"),
-		filepath.Join("ch06", "secure-channel", "certs", "server.key"))
+	cert, err := tls.LoadX509KeyPair(crtFile, keyFile)
 	if err != nil {
 		log.Fatalf("failed to load key pair: %s", err)
 	}
