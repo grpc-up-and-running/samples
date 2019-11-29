@@ -64,7 +64,7 @@ To build gRPC Java server with Bazel, use the following command from sample dire
 $ bazel build //ch02/productinfo/java:server
 ```
 
-To spin up the Java microservice, run the following command from root directory.
+To spin up the Java microservices, run the following command from root directory.
 ``` 
 $ bazel-bin/ch02/productinfo/java/server
 ```
