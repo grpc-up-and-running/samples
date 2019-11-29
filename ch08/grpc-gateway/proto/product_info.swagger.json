@@ -1,0 +1,90 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "product_info.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/product": {
+      "post": {
+        "operationId": "addProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ecommerceProduct"
+            }
+          }
+        ],
+        "tags": [
+          "ProductInfo"
+        ]
+      }
+    },
+    "/v1/product/{value}": {
+      "get": {
+        "operationId": "getProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ecommerceProduct"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "value",
+            "description": "The string value.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProductInfo"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ecommerceProduct": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    }
+  }
+}
