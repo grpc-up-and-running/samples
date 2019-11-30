@@ -20,15 +20,12 @@ public class ProductInfoServer {
                 .build()
                 .start();
         logger.info("Server started, listening on " + port);
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                // Use stderr here since the logger may have been reset by its JVM shutdown hook.
-                logger.info("*** shutting down gRPC server since JVM is shutting down");
-                ProductInfoServer.this.stop();
-                logger.info("*** server shut down");
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // Use stderr here since the logger may have been reset by its JVM shutdown hook.
+            logger.info("*** shutting down gRPC server since JVM is shutting down");
+            ProductInfoServer.this.stop();
+            logger.info("*** server shut down");
+        }));
     }
 
     private void stop() {
