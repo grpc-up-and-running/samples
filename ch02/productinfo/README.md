@@ -3,8 +3,7 @@
 - Online retail scenario has a `` ProductInfo`` micro service which is responsible for managing the products and their
  information. The consumer of that service can add, remove, retrieve products via that service. 
 
-- ``ProductInfo`` service and the consumer of that service are implemented on both ``Go`` and ``Java`` languages. 
-- One of the consumer of that service is written using ``Java``. 
+- ``ProductInfo`` service and the consumer of that service are implemented on both ``Go`` and ``Java`` languages.
 - This use case shows how you can implement both ``ProductInfo`` service and its consumer.
 
 -------------
