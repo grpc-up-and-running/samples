@@ -16,6 +16,7 @@ hs_err_pid*
 *.iml
 *.ipr
 *.iws
+*.sum
 
 # generated files
 target
@@ -25,6 +26,7 @@ results
 # gradle
 .gradle
 build/
+bin/
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
