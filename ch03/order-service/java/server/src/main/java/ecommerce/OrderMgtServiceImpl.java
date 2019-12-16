@@ -4,18 +4,12 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.StringValueOrBuilder;
 import io.grpc.stub.StreamObserver;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class OrderMgtServiceImpl extends OrderManagementGrpc.OrderManagementImplBase {
-
-    //private Map<String, OrderManagementOuterClass.Order> orderMap = new HashMap<>();
-
-
 
     private static final Logger logger = Logger.getLogger(OrderMgtServiceImpl.class.getName());
 
@@ -59,8 +53,12 @@ public class OrderMgtServiceImpl extends OrderManagementGrpc.OrderManagementImpl
             new AbstractMap.SimpleEntry<>(ord5.getId(), ord5))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+    private Map<String, OrderManagementOuterClass.CombinedShipment> combinedShipmentMap = new HashMap<>();
+
+    public static final int BATCH_SIZE = 3;
 
 
+    // Unary
     @Override
     public void addOrder(OrderManagementOuterClass.Order request, StreamObserver<StringValue> responseObserver) {
         logger.info("Order Added - ID: " + request.getId() + ", Destination : " + request.getDestination());
@@ -70,6 +68,7 @@ public class OrderMgtServiceImpl extends OrderManagementGrpc.OrderManagementImpl
         responseObserver.onCompleted();
     }
 
+    // Unary
     @Override
     public void getOrder(StringValue request, StreamObserver<OrderManagementOuterClass.Order> responseObserver) {
         OrderManagementOuterClass.Order order = orderMap.get(request.getValue());
@@ -85,6 +84,7 @@ public class OrderMgtServiceImpl extends OrderManagementGrpc.OrderManagementImpl
         // responseObserver.onError();
     }
 
+    // Server Streaming
     @Override
     public void searchOrders(StringValue request, StreamObserver<OrderManagementOuterClass.Order> responseObserver) {
 
@@ -103,6 +103,7 @@ public class OrderMgtServiceImpl extends OrderManagementGrpc.OrderManagementImpl
         responseObserver.onCompleted();
     }
 
+    // Client Streaming
     @Override
     public StreamObserver<OrderManagementOuterClass.Order> updateOrders(StreamObserver<StringValue> responseObserver) {
         return new StreamObserver<OrderManagementOuterClass.Order>() {
@@ -132,8 +133,63 @@ public class OrderMgtServiceImpl extends OrderManagementGrpc.OrderManagementImpl
         };
     }
 
+
+    // Bi-di Streaming
     @Override
     public StreamObserver<StringValue> processOrders(StreamObserver<OrderManagementOuterClass.CombinedShipment> responseObserver) {
-        return super.processOrders(responseObserver);
+
+        return new StreamObserver<StringValue>() {
+            int batchMarker = 0;
+            @Override
+            public void onNext(StringValue value) {
+                logger.info("Order Proc : ID - " + value.getValue());
+                OrderManagementOuterClass.Order currentOrder = orderMap.get(value.getValue());
+                if (currentOrder == null) {
+                    logger.info("No order found. ID - " + value.getValue());
+                    return;
+                }
+                // Processing an order and increment batch marker to
+                batchMarker++;
+                String orderDestination = currentOrder.getDestination();
+                OrderManagementOuterClass.CombinedShipment existingShipment = combinedShipmentMap.get(orderDestination);
+
+                if (existingShipment != null) {
+                    existingShipment = OrderManagementOuterClass.CombinedShipment.newBuilder(existingShipment).addOrdersList(currentOrder).build();
+                    combinedShipmentMap.put(orderDestination, existingShipment);
+                } else {
+                    OrderManagementOuterClass.CombinedShipment shipment = OrderManagementOuterClass.CombinedShipment.newBuilder().build();
+                    shipment = shipment.newBuilderForType()
+                            .addOrdersList(currentOrder)
+                            .setId("CMB-" + new Random().nextInt(1000)+ ":" + currentOrder.getDestination())
+                            .setStatus("Processed!")
+                            .build();
+                    combinedShipmentMap.put(currentOrder.getDestination(), shipment);
+                }
+
+                if (batchMarker == BATCH_SIZE) {
+                    // Order batch completed. Flush all existing shipments.
+                    for (Map.Entry<String, OrderManagementOuterClass.CombinedShipment> entry : combinedShipmentMap.entrySet()) {
+                        responseObserver.onNext(entry.getValue());
+                    }
+                    // Reset batch marker
+                    batchMarker = 0;
+                    combinedShipmentMap.clear();
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+                for (Map.Entry<String, OrderManagementOuterClass.CombinedShipment> entry : combinedShipmentMap.entrySet()) {
+                    responseObserver.onNext(entry.getValue());
+                }
+                responseObserver.onCompleted();
+            }
+
+        };
     }
 }

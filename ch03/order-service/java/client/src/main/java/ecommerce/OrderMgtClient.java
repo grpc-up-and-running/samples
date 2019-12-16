@@ -4,6 +4,7 @@ import com.google.protobuf.StringValue;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
+import io.grpc.stub.StreamObservers;
 
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
@@ -22,7 +23,7 @@ public class OrderMgtClient {
 
         OrderManagementOuterClass.Order order = OrderManagementOuterClass.Order
                 .newBuilder()
-                .setId("100500")
+                .setId("101")
                 .addItems("iPhone XS").addItems("Mac Book Pro")
                 .setDestination("San Jose, CA")
                 .setPrice(2300)
@@ -33,7 +34,7 @@ public class OrderMgtClient {
         logger.info("AddOrder Response -> : " + result.getValue());
 
         // Get Order
-        StringValue id = StringValue.newBuilder().setValue("100500").build();
+        StringValue id = StringValue.newBuilder().setValue("101").build();
         OrderManagementOuterClass.Order orderResponse = stub.getOrder(id);
         logger.info("GetOrder Response -> : " + orderResponse.toString());
 
@@ -49,7 +50,19 @@ public class OrderMgtClient {
                     + matchingOrder.toString());
         }
 
+
         // Update Orders
+        invokeOrderUpdate(asyncStub);
+
+        // Process Order
+        invokeOrderProcess(asyncStub);
+
+
+
+    }
+
+
+    private static void invokeOrderUpdate(OrderManagementGrpc.OrderManagementStub asyncStub) {
 
         OrderManagementOuterClass.Order updOrder1 = OrderManagementOuterClass.Order.newBuilder()
                 .setId("102")
@@ -107,12 +120,65 @@ public class OrderMgtClient {
 
         try {
             if (!finishLatch.await(10, TimeUnit.SECONDS)) {
-                logger.warning("FAILED : Update orders cannot finish with int 1 min.");
+                logger.warning("FAILED : Process orders cannot finish within 10 seconds");
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
     }
+
+    private static void invokeOrderProcess(OrderManagementGrpc.OrderManagementStub asyncStub) {
+
+        final CountDownLatch finishLatch = new CountDownLatch(1);
+
+
+        StreamObserver<OrderManagementOuterClass.CombinedShipment> orderProcessResponseObserver = new StreamObserver<OrderManagementOuterClass.CombinedShipment>() {
+            @Override
+            public void onNext(OrderManagementOuterClass.CombinedShipment value) {
+                logger.info("Combined Shipment : " + value.getId() + " : " + value.getOrdersListList());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+                logger.info("Order Processing completed!");
+                finishLatch.countDown();
+            }
+        };
+
+        StreamObserver<StringValue> orderProcessRequestObserver =  asyncStub.processOrders(orderProcessResponseObserver);
+
+        orderProcessRequestObserver.onNext(StringValue.newBuilder().setValue("102").build());
+        orderProcessRequestObserver.onNext(StringValue.newBuilder().setValue("103").build());
+        orderProcessRequestObserver.onNext(StringValue.newBuilder().setValue("104").build());
+        orderProcessRequestObserver.onNext(StringValue.newBuilder().setValue("101").build());
+
+        if (finishLatch.getCount() == 0) {
+            logger.warning("RPC completed or errored before we finished sending.");
+            return;
+        }
+        orderProcessRequestObserver.onCompleted();
+
+
+        try {
+            if (!finishLatch.await(120, TimeUnit.SECONDS)) {
+                logger.warning("FAILED : Process orders cannot finish within 60 seconds");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+    }
+
 
 }
