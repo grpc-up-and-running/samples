@@ -27,16 +27,13 @@ func main() {
 	defer cancel()
 
 	// Add Order
-	order1 := pb.Order{Id: "101", Items:[]string{"iPhone XS", "Mac Book Pro"}, Destination:"San Jose, CA", Price:2300.00}
+	order1 := pb.Order{Id: "101", Items: []string{"iPhone XS", "Mac Book Pro"}, Destination: "San Jose, CA", Price: 2300.00}
 	res, _ := client.AddOrder(ctx, &order1)
 	log.Print("AddOrder Response -> ", res.Value)
 
-
-
 	// Get Order
-	retrievedOrder , err := client.GetOrder(ctx, &wrapper.StringValue{Value: "106"})
+	retrievedOrder, err := client.GetOrder(ctx, &wrapper.StringValue{Value: "106"})
 	log.Print("GetOrder Response -> : ", retrievedOrder)
-
 
 	// Search Order : Server streaming scenario
 	searchStream, _ := client.SearchOrders(ctx, &wrapper.StringValue{Value: "Google"})
