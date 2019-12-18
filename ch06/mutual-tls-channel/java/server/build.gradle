@@ -12,6 +12,8 @@ dependencies {
     compile "io.grpc:grpc-protobuf:${grpcVersion}"
     compile "io.grpc:grpc-stub:${grpcVersion}"
     compile 'com.google.protobuf:protobuf-java:3.9.2'
+    compile "io.netty:netty-handler:4.1.38.Final"
+    compile "io.netty:netty-tcnative-boringssl-static:2.0.25.Final"
 }
 
 buildscript {
