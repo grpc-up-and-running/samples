@@ -4,7 +4,6 @@ import com.google.protobuf.StringValue;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
-import io.grpc.stub.StreamObservers;
 
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;

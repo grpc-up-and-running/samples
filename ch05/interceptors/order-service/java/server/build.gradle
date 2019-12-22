@@ -19,7 +19,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
     }
 }
@@ -52,7 +51,7 @@ sourceSets {
 
 jar {
     manifest {
-        attributes "Main-Class": "ecommerce.ProductInfoServer"
+        attributes "Main-Class": "ecommerce.OrderMgtServer"
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
