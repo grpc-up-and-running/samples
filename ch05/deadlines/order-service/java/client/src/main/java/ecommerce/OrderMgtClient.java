@@ -34,7 +34,11 @@ public class OrderMgtClient {
             StringValue result = stub.addOrder(order);
             logger.info("AddOrder Response -> : " + result.getValue());
         } catch (StatusRuntimeException e) {
-            logger.info("Deadline Exceeded. : " + e.getMessage());
+            if (e.getStatus().getCode() == Status.Code.DEADLINE_EXCEEDED) {
+                logger.info("Deadline Exceeded. : " + e.getMessage());
+            } else {
+                logger.info("Unspecified error from the service -> " + e.getMessage());
+            }
         }
 
     }
