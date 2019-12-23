@@ -9,7 +9,7 @@ public class OrderMgtServerCallListener<R> extends ForwardingServerCallListener<
     private static final Logger logger = Logger.getLogger(OrderMgtServerCallListener.class.getName());
 
     private final ServerCall.Listener<R> delegate;
-    
+
     OrderMgtServerCallListener(ServerCall.Listener<R> delegate) {
         this.delegate = delegate;
     }
