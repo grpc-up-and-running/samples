@@ -92,9 +92,6 @@ func valid(authorization []string) bool {
 		return false
 	}
 	token := strings.TrimPrefix(authorization[0], "Basic ")
-	// Perform the token validation here. For the sake of this example, the code
-	// here forgoes any of the usual OAuth2 token validation and instead checks
-	// for a token matching an arbitrary string.
 	return token == base64.StdEncoding.EncodeToString([]byte("admin:admin"))
 }
 
@@ -110,7 +107,7 @@ func ensureValidBasicCredentials(ctx context.Context, req interface{}, info *grp
 	}
 	// The keys within metadata.MD are normalized to lowercase.
 	// See: https://godoc.org/google.golang.org/grpc/metadata#New
-	if !valid(md["authorization"]) {
+	if !valid(md["Authorization"]) {
 		return nil, errInvalidToken
 	}
 	// Continue execution of handler after ensuring a valid token.
