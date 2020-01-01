@@ -25,7 +25,7 @@ public class ProductInfoClient {
                 .sslContext(sslContext)
                 .build();
 
-        BasicCallCredentials callCredentials = new BasicCallCredentials("admin", "admin");
+        TokenCallCredentials callCredentials = new TokenCallCredentials("some-secret-token");
 
         ProductInfoGrpc.ProductInfoBlockingStub stub =
                 ProductInfoGrpc.newBlockingStub(channel).withCallCredentials(callCredentials);
