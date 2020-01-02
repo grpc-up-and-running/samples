@@ -52,7 +52,7 @@ sourceSets {
 
 jar {
     manifest {
-        attributes "Main-Class": "ecommerce.ProductInfoServer"
+        attributes "Main-Class": "ecommerce.OrderMgtServer"
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }

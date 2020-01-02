@@ -20,9 +20,10 @@ public class OrderMgtClient {
         OrderManagementGrpc.OrderManagementBlockingStub stub = OrderManagementGrpc.newBlockingStub(channel).withDeadlineAfter(1000, TimeUnit.MILLISECONDS);
         OrderManagementGrpc.OrderManagementStub asyncStub = OrderManagementGrpc.newStub(channel);
 
+        // Creating an order with invalid Order ID.
         OrderManagementOuterClass.Order order = OrderManagementOuterClass.Order
                 .newBuilder()
-                .setId("101")
+                .setId("-1")
                 .addItems("iPhone XS").addItems("Mac Book Pro")
                 .setDestination("San Jose, CA")
                 .setPrice(2300)
@@ -34,11 +35,8 @@ public class OrderMgtClient {
             StringValue result = stub.addOrder(order);
             logger.info("AddOrder Response -> : " + result.getValue());
         } catch (StatusRuntimeException e) {
-            if (e.getStatus().getCode() == Status.Code.DEADLINE_EXCEEDED) {
-                logger.info("Deadline Exceeded. : " + e.getMessage());
-            } else {
-                logger.info("Unspecified error from the service -> " + e.getMessage());
-            }
+            logger.info(" Error Received - Error Code : " + e.getStatus().getCode());
+            logger.info("Error details -> " + e.getMessage());
         }
 
     }
