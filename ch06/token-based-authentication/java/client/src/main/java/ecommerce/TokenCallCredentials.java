@@ -7,12 +7,12 @@ import io.grpc.Status;
 import java.util.Base64;
 import java.util.concurrent.Executor;
 
-public class BasicCallCredentials extends CallCredentials {
+public class TokenCallCredentials extends CallCredentials {
 
     private final String credentials;
 
-    public BasicCallCredentials(String username, String password) {
-        this.credentials = username + ":" + password;
+    TokenCallCredentials(String token) {
+        this.credentials = token;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class BasicCallCredentials extends CallCredentials {
             try {
                 Metadata headers = new Metadata();
                 Metadata.Key<String> authKey = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
-                headers.put(authKey, "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes()));
+                headers.put(authKey, "Bearer " + credentials);
                 applier.apply(headers);
             } catch (Throwable e) {
                 applier.fail(Status.UNAUTHENTICATED.withCause(e));
