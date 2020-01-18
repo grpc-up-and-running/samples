@@ -1,6 +1,7 @@
 # gRPC - Up and Running 
 
-![gRPC Up and Running - Cover](./images/grpc-cover.png)
+![gRPC Up and Running - Cover](./images/grpc-cover.png=400x400)
+
 
 
 ## Sample Source Code
