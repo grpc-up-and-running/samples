@@ -1,4 +1,8 @@
 # gRPC - Up and Running 
+
+![gRPC Up and Running - Cover](./images/grpc-cover.png)
+
+
 ## Sample Source Code
 
 This repository accompanies gRPC - Up and Running (Working in Progress).
