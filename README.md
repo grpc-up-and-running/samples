@@ -12,28 +12,15 @@ All the samples are written in both Go language and Java language. Feel free to 
 ### Kasun Indrasiri
 ![Kasun](./images/kasun.jpg)
 
-Kasun Indrasiri is an author and an evangelist of microservices and enterprise integration
-architecture with over ten years of experience in building distributed systems.
-He is the director of Integration Architecture at WSO2 and the product manager of
-the WSO2 Enterprise Integrator. 
+Kasun Indrasiri is an author and architect with extensive experience in microservices, cloud native, and
+enterprise integration architecture. He is the director of integration architecture at WSO2 and the product manager of the WSO2 Enterprise Integrator.
 
-He has authored Microservices for Enterprise (Apress, 2018) and Beginning WSO2 ESB (Apress, 2017) and has spoken at several conferences,
-including the O’Reilly Software Architecture Conference 2019 in San Jose and
-GOTO Con 2019 in Chicago, and WSO2 Conferences in San Francisco, London, and
-Barcelona. Kasun lives in San Jose, California, and has founded the “Silicon Valley
-Microservices, APIs and Integration” Meetup, which is one of the largest microservices
-meetups in the San Francisco Bay area.
 
 ### Danesh Kuruppu 
 ![Danes](./images/danesh.jpg)
 
-Danesh Kuruppu is an associate technical Lead at WSO2 with over five years of experience
-in enterprise integration and microservices technologies. Danesh is the main
-designer and developer of adding gRPC support for the open source, cloud native
-programming language Ballerina. He is part of the gRPC community and a key contributor
-to the WSO2 Microservices Framework for Java and WSO2 Governance
-Registry.
-
+Danesh Kuruppu is an associate technical lead at WSO2 with expertise in microservices, messaging protocols, and service governance. Danesh has spearheaded the development
+of gRPC language implementation and microservices framework.
 
 
 
