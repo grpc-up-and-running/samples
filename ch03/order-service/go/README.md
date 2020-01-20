@@ -1,14 +1,31 @@
-## GO Impl 
+## ``OrderManagement`` Service and Client - Go Implementation
 
+## Building and Running Service
 
+In order to build, Go to ``Go`` module root directory location (order-service/go/server) and execute the following
+ shell command,
+```
+go build -i -v -o bin/server
+```
 
-Generate Server and Client side code 
+In order to run, Go to ``Go`` module root directory location (order-service/go/server) and execute the following
+shell command,
 
-``` 
-protoc -I order_service ./order_service/order_management.proto --go_out=plugins=grpc:order_service order_service/order_service.proto
-``` 
+```
+./bin/server
+```
 
-Update after changing the service definition
-``` 
- go get -u github.com/grpc-up-and-running/samples/ch03/order-service/go/order_service 
-``` 
+## Building and Running Client   
+
+In order to build, Go to ``Go`` module root directory location (order-service/go/client) and execute the following
+ shell command,
+```
+go build -i -v -o bin/client
+```
+
+In order to run, Go to ``Go`` module root directory location (order-service/go/client) and execute the following
+shell command,
+
+```
+./bin/client
+```
