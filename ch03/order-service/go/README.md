@@ -29,3 +29,10 @@ shell command,
 ```
 ./bin/client
 ```
+
+## Additional Information
+
+### Generate Server and Client side code 
+``` 
+protoc -I proto/ proto/order_management.proto --go_out =plugins=grpc:order-service-gen
+``` 

@@ -30,7 +30,7 @@ shell command,
 ./bin/client
 ```
 
-## Note
+## Additional Information
 
 ### Generate Server and Client side code 
 ``` 
