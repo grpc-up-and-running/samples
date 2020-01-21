@@ -1,19 +1,52 @@
+## ``ProductInfo`` Service and Client - Go Implementation
 
-Creating Docker Network 
+## Building and Running Service
+
+In order to build, Go to ``Go`` module root directory location (grpc-continous-integration/go/server) and execute the following
+ shell command,
+```
+go build -i -v -o bin/server
+```
+
+In order to run, Go to ``Go`` module root directory location (grpc-continous-integration/go/server) and execute the following
+shell command,
+
+```
+./bin/server
+```
+
+## Building and Running Client   
+
+In order to build, Go to ``Go`` module root directory location (grpc-continous-integration/go/client) and execute the following
+ shell command,
+```
+go build -i -v -o bin/client
+```
+
+In order to run, Go to ``Go`` module root directory location (grpc-continous-integration/go/client) and execute the following
+shell command,
+
+```
+./bin/client
+```
+
+### Running Test
+
+### Creating Docker Network 
 
 ``` 
     docker network create my-net
 ```
 
 
-Building Server 
+### Building Server 
 
 ``` 
     docker image build -t grpc-productinfo-server -f server/Dockerfile .
     docker run -it --network=my-net --name=productinfo --hostname=productinfo -p 50051:50051  grpc-productinfo-server
 ```
 
-Building Client 
+### Building Client 
 
 
 ``` 
@@ -22,7 +55,7 @@ Building Client
      
 ``` 
 
-Tagging and Pushing to a Docker Registry 
+### Tagging and Pushing to a Docker Registry 
 
 ``` 
     docker image tag grpc-productinfo-server kasunindrasiri/grpc-productinfo-server
