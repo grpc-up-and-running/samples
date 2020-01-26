@@ -35,3 +35,4 @@ message ProductID {
 
 - [Go](./productinfo/go/README.md)
 - [Java](./productinfo/java/README.md)
+- [Python](./productinfo/python/README.md)
