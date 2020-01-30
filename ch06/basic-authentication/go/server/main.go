@@ -107,7 +107,7 @@ func ensureValidBasicCredentials(ctx context.Context, req interface{}, info *grp
 	}
 	// The keys within metadata.MD are normalized to lowercase.
 	// See: https://godoc.org/google.golang.org/grpc/metadata#New
-	if !valid(md["Authorization"]) {
+	if !valid(md["authorization"]) {
 		return nil, errInvalidToken
 	}
 	// Continue execution of handler after ensuring a valid token.

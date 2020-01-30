@@ -24,7 +24,7 @@ public class BasicAuthInterceptor implements ServerInterceptor {
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
-        String basicAuthString = headers.get(Metadata.Key.of("Authorization", ASCII_STRING_MARSHALLER));
+        String basicAuthString = headers.get(Metadata.Key.of("authorization", ASCII_STRING_MARSHALLER));
         if (basicAuthString == null) {
             call.close(Status.UNAUTHENTICATED.withDescription("Basic authentication value is missing in Metadata"),
                     headers);

@@ -20,7 +20,7 @@ public class BasicCallCredentials extends CallCredentials {
         executor.execute(() -> {
             try {
                 Metadata headers = new Metadata();
-                Metadata.Key<String> authKey = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
+                Metadata.Key<String> authKey = Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
                 headers.put(authKey, "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes()));
                 applier.apply(headers);
             } catch (Throwable e) {
