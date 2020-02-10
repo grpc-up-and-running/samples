@@ -33,6 +33,8 @@ shell command,
 ## Additional Information
 
 ### Generate Server and Client side code 
+Pre-generated stub file is included in the go project. If you need to generate the stub files please use the below
+ command from the root directory(inside productinfo directory)
 ``` 
-protoc -I proto/ proto/order_management.proto --go_out =plugins=grpc:service-gen
+protoc -I proto/ proto/product_info.proto --go_out =plugins=grpc:go/server/ecommerce
 ``` 
