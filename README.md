@@ -13,7 +13,7 @@ All the samples of this repository require to have the accompanying book [gRPC U
 You can purchase it from following book sellers worldwide.  
 
 * [Amazon](https://www.amazon.com/gRPC-Running-Building-Applications-Kubernetes/dp/1492058335/)
-* [Barns and Nobel](https://www.barnesandnoble.com/w/grpc-kasun-indrasiri/1132647211?ean=9781492058335#/) 
+* [Barnes and Nobel](https://www.barnesandnoble.com/w/grpc-kasun-indrasiri/1132647211?ean=9781492058335#/) 
 
 ## Prerequisites
 
