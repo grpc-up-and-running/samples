@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	pb "github.com/grpc-up-and-running/samples/ch05/inteceptors/order-service/go/order-service-gen"
+	pb "github.com/grpc-up-and-running/samples/ch05/interceptors/order-service/go/order-service-gen"
 	hwpb "google.golang.org/grpc/examples/helloworld/helloworld"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
