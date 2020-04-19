@@ -36,7 +36,8 @@ You can purchase it from following book sellers worldwide.
     - No code samples required for this chapter.
 
 - Chapter 02 - Getting Started with gRPC
-    - Getting Started with gRPC [[Go]](./ch02/productinfo/go) [[Java]](./ch02/productinfo/java) [[Python]](./ch02/productinfo/python) [[Node.js]](./ch02/productinfo/nodejs) 
+    - Getting Started with gRPC [[Go]](./ch02/productinfo/go) [[Java]](./ch02/productinfo/java) [[Python]](./ch02/productinfo/python) [[Node.js]](./ch02/productinfo/nodejs) [[Kotlin]](./ch02/productinfo/kotlin)
+    
 - Chapter 03 - gRPC Communication Patterns
     - Communication patterns [[Go]](./ch03/order-service/go) [[Java]](./ch03/order-service/java) 
 

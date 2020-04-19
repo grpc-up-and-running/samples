@@ -37,3 +37,4 @@ message ProductID {
 - [Java](./productinfo/java/README.md)
 - [Python](./productinfo/python/README.md)
 - [Node.js](./productinfo/nodejs/README.md)
+- [Kotlin](./productinfo/kotlin/README.md)
