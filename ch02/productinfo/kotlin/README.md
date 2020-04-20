@@ -5,7 +5,7 @@
 In order to build gradle project, Go to the project root directory location (samples) and execute
  the following shell command,
 ```
-./gradlew :ch02:productinfo:kotlin:server:build
+./gradlew installDist
 ```
 
 In order to run, Go to ``Kotlin`` project root directory location (productinfo/kotlin/server) and execute the following
@@ -20,7 +20,7 @@ shell command,
 In order to build gradle project, Go to the project root directory location (inside samples directory) and execute
  the following shell command,
 ```
-./gradlew :ch02:productinfo:kotlin:client:build
+./gradlew installDist
 ```
 
 In order to run, Go to ``Kotlin`` project root directory location (productinfo/java/client) and execute the following
