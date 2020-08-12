@@ -35,6 +35,9 @@ func main() {
 
 	// Get Order
 	retrievedOrder, err := client.GetOrder(ctx, &wrapper.StringValue{Value: "106"})
+	if err != nil {
+		log.Fatalf("%v.GetOrder(ctx, &wrapper.StringValue{Value: \"106\"}) = _, %v", client, err)
+	}
 	log.Print("GetOrder Response -> : ", retrievedOrder)
 
 	// Search Order : Server streaming scenario
