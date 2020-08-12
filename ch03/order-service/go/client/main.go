@@ -125,7 +125,7 @@ func asncClientBidirectionalRPC(streamProcOrder pb.OrderManagement_ProcessOrders
 		if errProcOrder == io.EOF {
 			break
 		}
-		log.Printf("Combined shipment : ", combinedShipment.OrdersList)
+		log.Printf("Combined shipment : %v", combinedShipment.OrdersList)
 	}
 	<-c
 }
