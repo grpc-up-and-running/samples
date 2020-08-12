@@ -127,5 +127,5 @@ func asncClientBidirectionalRPC(streamProcOrder pb.OrderManagement_ProcessOrders
 		}
 		log.Printf("Combined shipment : %v", combinedShipment.OrdersList)
 	}
-	<-c
+	close(c)
 }
