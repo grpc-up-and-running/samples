@@ -120,7 +120,7 @@ public class OrderMgtServiceImpl extends OrderManagementGrpc.OrderManagementImpl
 
             @Override
             public void onError(Throwable t) {
-
+                logger.info("Order ID update error " + t.getMessage());
             }
 
             @Override
