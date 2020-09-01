@@ -1,5 +1,3 @@
-
-
 # Multi stage build
 
 # Build stage I : Go lang and Alpine Linux is only needed to build the program
