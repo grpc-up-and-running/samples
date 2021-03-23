@@ -122,5 +122,5 @@ func main() {
 //		}
 //		log.Printf("Combined shipment : ", combinedShipment.OrdersList)
 //	}
-//	<-c
+//	c <- struct{}{}
 //}
