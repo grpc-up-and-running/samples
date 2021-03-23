@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	pb "ordermgt/client/ecommerce"
 	"time"
@@ -111,7 +112,7 @@ func main() {
 	// if err := streamProcOrder.CloseSend(); err != nil {
 	// 	log.Fatal(err)
 	// }
-	// <- channel
+	// channel <- struct{}{}
 }
 
 //func asncClientBidirectionalRPC(streamProcOrder pb.OrderManagement_ProcessOrdersClient, c chan struct{}) {
@@ -122,5 +123,5 @@ func main() {
 //		}
 //		log.Printf("Combined shipment : ", combinedShipment.OrdersList)
 //	}
-//	c <- struct{}{}
+//	<- c
 //}
