@@ -111,7 +111,7 @@ func main() {
 	// if err := streamProcOrder.CloseSend(); err != nil {
 	// 	log.Fatal(err)
 	// }
-	// <- channel
+	// channel <- struct{}{}
 }
 
 //func asncClientBidirectionalRPC(streamProcOrder pb.OrderManagement_ProcessOrdersClient, c chan struct{}) {
