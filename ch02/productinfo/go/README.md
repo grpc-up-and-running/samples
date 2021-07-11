@@ -5,7 +5,7 @@
 In order to build, Go to ``Go`` module root directory location (productinfo/go/server) and execute the following
  shell command,
 ```
-go build -i -v -o bin/server
+go build -v -o bin/server
 ```
 
 In order to run, Go to ``Go`` module root directory location (productinfo/go/server) and execute the following
