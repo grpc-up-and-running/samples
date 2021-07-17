@@ -5,15 +5,16 @@ repositories {
     mavenCentral()
 }
 
-def grpcVersion = '1.24.1'
+def grpcVersion = '1.39.0'
 
 dependencies {
     compile "io.grpc:grpc-netty:${grpcVersion}"
     compile "io.grpc:grpc-protobuf:${grpcVersion}"
     compile "io.grpc:grpc-stub:${grpcVersion}"
-    compile 'com.google.protobuf:protobuf-java:3.9.2'
-    compile "io.netty:netty-handler:4.1.38.Final"
-    compile "io.netty:netty-tcnative-boringssl-static:2.0.25.Final"
+    compile 'com.google.protobuf:protobuf-java:3.17.2'
+    compile 'javax.annotation:javax.annotation-api:1.2'
+    compile "io.netty:netty-handler:4.1.52.Final"
+    compile "io.netty:netty-tcnative-boringssl-static:2.0.40.Final"
 }
 
 buildscript {
@@ -21,14 +22,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.17'
     }
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.9.2'
+        artifact = 'com.google.protobuf:protoc:3.17.2'
     }
     plugins {
         grpc {

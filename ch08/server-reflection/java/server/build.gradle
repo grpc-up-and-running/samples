@@ -6,14 +6,15 @@ repositories {
 }
 
 // updating the version in our release process.
-def grpcVersion = '1.8.0' // CURRENT_GRPC_VERSION
+def grpcVersion = '1.39.0' // CURRENT_GRPC_VERSION
 
 dependencies {
     compile "io.grpc:grpc-netty:${grpcVersion}"
     compile "io.grpc:grpc-protobuf:${grpcVersion}"
     compile "io.grpc:grpc-stub:${grpcVersion}"
     compile "io.grpc:grpc-services:${grpcVersion}"
-    compile 'com.google.protobuf:protobuf-java:3.4.0'
+    compile 'com.google.protobuf:protobuf-java:3.17.2'
+    compile 'javax.annotation:javax.annotation-api:1.2'
 }
 
 buildscript {
@@ -21,15 +22,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // ASSUMES GRADLE 2.12 OR HIGHER. Use plugin version 0.7.5 with earlier
-        // gradle versions
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.4'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.17'
     }
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.4.0'
+        artifact = 'com.google.protobuf:protoc:3.17.2'
     }
     plugins {
         grpc {

@@ -1,15 +1,15 @@
 buildscript {
-    ext.kotlin_version = '1.3.61'
-    ext.coroutines_version = '1.3.3'
-    ext.protobuf_version = '3.11.1'
-    ext.grpc_version = '1.28.0' // CURRENT_GRPC_VERSION
-    ext.grpc_kotlin_version = '0.1.1' // CURRENT_GRPC_KOTLIN_VERSION
+    ext.kotlin_version = '1.5.21'
+    ext.coroutines_version = '1.5.0'
+    ext.protobuf_version = '3.17.2'
+    ext.grpc_version = '1.39.0' // CURRENT_GRPC_VERSION
+    ext.grpc_kotlin_version = '1.1.0' // CURRENT_GRPC_KOTLIN_VERSION
 
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.11'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.17'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -33,9 +33,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}"
 
     // gRPC and Protobuf
-    implementation 'com.google.protobuf:protobuf-gradle-plugin:0.8.11'
+    implementation 'com.google.protobuf:protobuf-gradle-plugin:0.8.17'
     implementation "com.google.protobuf:protobuf-java:${protobuf_version}"
-    implementation "com.google.protobuf:protobuf-java-util:3.11.1"
+    implementation "com.google.protobuf:protobuf-java-util:${protobuf_version}"
     implementation "io.grpc:grpc-netty-shaded:${grpc_version}"
     implementation "io.grpc:grpc-protobuf:${grpc_version}"
     implementation "io.grpc:grpc-stub:${grpc_version}"
@@ -47,10 +47,10 @@ dependencies {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 
 protobuf {
@@ -60,7 +60,7 @@ protobuf {
             artifact = "io.grpc:protoc-gen-grpc-java:${grpc_version}"
         }
         grpckt {
-            artifact = "io.grpc:protoc-gen-grpc-kotlin:${grpc_kotlin_version}"
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:${grpc_kotlin_version}:jdk7@jar"
         }
     }
     generateProtoTasks {
