@@ -30,6 +30,12 @@ shell command,
 ./bin/client
 ```
 
+If you use Go 1.15 or later, add environment variable as follows.
+
+```
+GODEBUG=x509ignoreCN=0 ./bin/client
+```
+
 ## Additional Information
 
 ### Update after changing the service definition

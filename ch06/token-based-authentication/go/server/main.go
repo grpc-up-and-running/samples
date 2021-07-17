@@ -9,18 +9,19 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	wrapper "github.com/golang/protobuf/ptypes/wrappers"
+	"log"
+	"net"
+	"path/filepath"
+	"strings"
+
+	pb "productinfo/server/ecommerce"
+
 	"github.com/google/uuid"
-	pb "github.com/grpc-up-and-running/samples/ch02/productinfo/go/product_info"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"log"
-	"net"
-	"path/filepath"
-	"strings"
 )
 
 // server is used to implement ecommerce/product_info.
@@ -29,15 +30,15 @@ type server struct {
 }
 
 var (
-	port = ":50051"
-	crtFile = filepath.Join("ch06", "secure-channel", "certs", "server.crt")
-	keyFile = filepath.Join("ch06", "secure-channel", "certs", "server.key")
+	port               = ":50051"
+	crtFile            = filepath.Join("..", "..", "certs", "server.crt")
+	keyFile            = filepath.Join("..", "..", "certs", "server.key")
 	errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata")
 	errInvalidToken    = status.Errorf(codes.Unauthenticated, "invalid token")
 )
 
 // AddProduct implements ecommerce.AddProduct
-func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.StringValue, error) {
+func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*pb.ProductID, error) {
 	out, err := uuid.NewUUID()
 	if err != nil {
 		log.Fatal(err)
@@ -47,11 +48,11 @@ func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.Strin
 		s.productMap = make(map[string]*pb.Product)
 	}
 	s.productMap[in.Id] = in
-	return &wrapper.StringValue{Value: in.Id}, nil
+	return &pb.ProductID{Value: in.Id}, nil
 }
 
 // GetProduct implements ecommerce.GetProduct
-func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.Product, error) {
+func (s *server) GetProduct(ctx context.Context, in *pb.ProductID) (*pb.Product, error) {
 	value, exists := s.productMap[in.Value]
 	if exists {
 		return value, nil
