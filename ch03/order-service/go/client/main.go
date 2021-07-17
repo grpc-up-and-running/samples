@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"google.golang.org/grpc"
 	"log"
 	pb "ordermgt/client/ecommerce"
 	"time"
+
+	"google.golang.org/grpc"
 )
 
 const (
@@ -19,8 +20,8 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	client  := pb.NewOrderManagementClient(conn)
-	ctx , cancel := context.WithTimeout(context.Background(), time.Second*5)
+	client := pb.NewOrderManagementClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	// Add Order
@@ -110,7 +111,7 @@ func main() {
 	// if err := streamProcOrder.CloseSend(); err != nil {
 	// 	log.Fatal(err)
 	// }
-	// <- channel
+	// channel <- struct{}{}
 }
 
 //func asncClientBidirectionalRPC(streamProcOrder pb.OrderManagement_ProcessOrdersClient, c chan struct{}) {
