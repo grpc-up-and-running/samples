@@ -41,6 +41,7 @@ message CombinedShipment {
 
 - [Go](./order-service/go/README.md)
 - [Java](./order-service/java/README.md)
+- [Python](./order-service/python/README.md)
 
 
 
