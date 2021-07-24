@@ -1,7 +1,6 @@
 import grpc
 import product_info_pb2
 import product_info_pb2_grpc
-import time;
 
 def run():
     # open a gRPC channel
