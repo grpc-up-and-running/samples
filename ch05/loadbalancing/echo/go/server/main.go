@@ -18,6 +18,7 @@ var (
 )
 
 type ecServer struct {
+	ecpb.UnimplementedEchoServer
 	addr string
 }
 
