@@ -6,8 +6,8 @@ import java.util.UUID
 import io.grpc.Status.NOT_FOUND
 import io.grpc.StatusException
 
-class ProductInfoServer constructor(
-    private val port: Int
+class ProductInfoServer(
+    private val port: Int,
 ) {
   val server: Server = ServerBuilder
       .forPort(port)
@@ -35,28 +35,28 @@ class ProductInfoServer constructor(
   }
 
   private class ProductInfoService : ProductInfoGrpcKt.ProductInfoCoroutineImplBase() {
-    val productMap:HashMap<String,Product> = HashMap<String,Product>()
+    val productMap = HashMap<String,Product>()
 
     override suspend fun addProduct(request: Product): ProductID {
-      var uuid = UUID.randomUUID()
-      var product = Product.newBuilder().apply {
-        this.id = uuid.toString()
-        this.name = request.name
-        this.description = request.description
-        this.price = request.price
-      }.build()
+      val uuid = UUID.randomUUID()
+      val product = product {
+        id = uuid.toString()
+        name = request.name
+        description = request.description
+        price = request.price
+      }
       // Add product to the inmemory map.
-      productMap.put(product.id, product)
+      productMap[product.id] = product
 
-      return ProductID.newBuilder().apply {
-        this.value = product.id
-      }.build()
+      return productID {
+        value = product.id
+      }
     }
 
     override suspend fun getProduct(request: ProductID): Product {
       val productID = request.value
-      return productMap.get(productID) ?:
-      throw StatusException(NOT_FOUND.withDescription("Requested product with id ${productID} doesn't exist"))
+      return productMap[productID] ?:
+        throw StatusException(NOT_FOUND.withDescription("Requested product with id $productID doesn't exist"))
     }
   }
 }
