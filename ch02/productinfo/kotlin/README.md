@@ -8,7 +8,7 @@ In order to build gradle project, Go to the project root directory location (sam
 ./gradlew installDist
 ```
 
-In order to run, Go to ``Kotlin`` project root directory location (productinfo/kotlin/server) and execute the following
+In order to run, Go to ``Kotlin`` project root directory location (ch02/productinfo/kotlin/server) and execute the following
 shell command,
 
 ```
@@ -23,7 +23,7 @@ In order to build gradle project, Go to the project root directory location (ins
 ./gradlew installDist
 ```
 
-In order to run, Go to ``Kotlin`` project root directory location (productinfo/java/client) and execute the following
+In order to run, Go to ``Kotlin`` project root directory location (ch02/productinfo/kotlin/client) and execute the following
 shell command,
 
 ```
