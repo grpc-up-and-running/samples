@@ -119,10 +119,22 @@ int main(int argc, char** argv) {
             "Apple iPhone 11",
             "Meet Apple iPhone 11. All-new dual-camera system with Ultra Wide and Nigh mode.",
             1000.0);
-    std::cout << "Greeter received: " << reply << std::endl;
+    std::cout << "ProductInfo received: " << reply << std::endl;
 
-    std::string product_info = product_info_server.getProduct(reply);
-    std::cout << "Greeter received: " << product_info << std::endl;
+    reply = product_info_server.addProduct(
+            "Apple iPhone 11 Mini",
+            "Meet Apple iPhone 11 Mini.",
+            899.0);
+    std::cout << "ProductInfo received: " << reply << std::endl;
+
+    reply = product_info_server.addProduct(
+            "Apple iPhone 11 SE",
+            "Meet Apple iPhone 11 SE.",
+            1000.0);
+    std::cout << "ProductInfo received: " << reply << std::endl;
+
+    std::string product_info = product_info_server.getProduct("2");
+    std::cout << "ProductInfo received: " << product_info << std::endl;
 
     return 0;
 }
