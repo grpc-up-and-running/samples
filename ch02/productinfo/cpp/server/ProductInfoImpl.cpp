@@ -9,6 +9,7 @@ grpc::Status ProductInfoImpl::addProduct(::grpc::ServerContext *context, const :
     std::cout << request->DebugString();
     std::string id = uuid_gen_test();
     (*server_info)[id]=*request;
+    (*server_info)[id].set_id(id);
     response->set_value(id);
     return grpc::Status::OK;
 }
@@ -31,5 +32,6 @@ std::string ProductInfoImpl::uuid_gen_test() {
     static int i = 1;
     std::stringstream ss;
     ss << i ;
+    i++;
     return ss.str();
 }
